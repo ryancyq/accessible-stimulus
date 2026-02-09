@@ -2,6 +2,7 @@
   "name": "@accessible-stimulus/controllers",
   "version": "0.1.0",
   "description": "Stimulus controllers following WCAG standards",
+  "type": "module",
   "main": "dist/index.js",
   "module": "dist/index.esm.js",
   "files": [

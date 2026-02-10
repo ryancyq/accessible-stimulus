@@ -22,20 +22,14 @@ export const FOCUSABLE_SELECTOR = [
  * Get all focusable elements within a container
  */
 export function getFocusableElements(container) {
-  return Array.from(
-    container.querySelectorAll(FOCUSABLE_SELECTOR)
-  ).filter((el) => isVisible(el));
+  return Array.from(container.querySelectorAll(FOCUSABLE_SELECTOR)).filter((el) => isVisible(el));
 }
 
 /**
  * Check if an element is visible
  */
 export function isVisible(element) {
-  return !!(
-    element.offsetWidth ||
-    element.offsetHeight ||
-    element.getClientRects().length
-  );
+  return !!(element.offsetWidth || element.offsetHeight || element.getClientRects().length);
 }
 
 /**

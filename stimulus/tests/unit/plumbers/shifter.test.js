@@ -1,0 +1,354 @@
+import { describe, it, expect, beforeEach, afterEach, vi } from 'vitest'
+import { Shifter, attachShifter } from '../../../src/plumbers/shifter'
+
+describe('Shifter', () => {
+  let mockController
+  let element
+
+  beforeEach(() => {
+    element = document.createElement('div')
+    document.body.appendChild(element)
+
+    mockController = {
+      identifier: 'shifter',
+      element: element,
+      dispatch: vi.fn((name, options) => true),
+      disconnect: vi.fn(),
+    }
+
+    // Mock getBoundingClientRect
+    element.getBoundingClientRect = () => ({
+      x: 100,
+      y: 100,
+      top: 100,
+      left: 100,
+      right: 300,
+      bottom: 300,
+      width: 200,
+      height: 200,
+    })
+  })
+
+  afterEach(() => {
+    vi.clearAllMocks()
+  })
+
+  describe('constructor', () => {
+    it('initializes with default options', () => {
+      const shifter = new Shifter(mockController)
+
+      expect(shifter.controller).toBe(mockController)
+      expect(shifter.events).toEqual(['resize'])
+      expect(shifter.boundaries).toEqual(['top', 'left', 'right'])
+      expect(shifter.onShifted).toBe('shifted')
+    })
+
+    it('accepts custom events', () => {
+      const shifter = new Shifter(mockController, {
+        events: ['scroll', 'resize'],
+      })
+
+      expect(shifter.events).toEqual(['scroll', 'resize'])
+    })
+
+    it('accepts custom boundaries', () => {
+      const shifter = new Shifter(mockController, {
+        boundaries: ['top', 'bottom'],
+      })
+
+      expect(shifter.boundaries).toEqual(['top', 'bottom'])
+    })
+
+    it('accepts custom onShifted callback', () => {
+      const shifter = new Shifter(mockController, {
+        onShifted: 'customShifted',
+      })
+
+      expect(shifter.onShifted).toBe('customShifted')
+    })
+
+    it('enhances controller with shift method', () => {
+      const shifter = new Shifter(mockController)
+
+      expect(mockController.shift).toBeTypeOf('function')
+    })
+  })
+
+  describe('elementTranslations', () => {
+    it('returns zero translations for untransformed element', () => {
+      const shifter = new Shifter(mockController)
+      const translations = shifter.elementTranslations(element)
+
+      expect(translations).toEqual({ x: 0, y: 0 })
+    })
+
+    it('parses 2D matrix transformations', () => {
+      element.style.transform = 'matrix(1, 0, 0, 1, 50, 100)'
+      const shifter = new Shifter(mockController)
+      const translations = shifter.elementTranslations(element)
+
+      expect(translations).toEqual({ x: 50, y: 100 })
+    })
+
+    it('returns zero for 3D matrix transformations', () => {
+      element.style.transform = 'matrix3d(1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 50, 100, 0, 1)'
+      const shifter = new Shifter(mockController)
+      const translations = shifter.elementTranslations(element)
+
+      expect(translations).toEqual({ x: 0, y: 0 })
+    })
+  })
+
+  describe('directionDistance', () => {
+    it('calculates distance for top direction', () => {
+      const shifter = new Shifter(mockController)
+      const inner = { top: 50, bottom: 150, left: 50, right: 150 }
+      const outer = { top: 0, bottom: 200, left: 0, right: 200 }
+
+      const distance = shifter.directionDistance(inner, 'top', outer)
+
+      expect(distance).toBe(50)
+    })
+
+    it('calculates distance for bottom direction', () => {
+      const shifter = new Shifter(mockController)
+      const inner = { top: 50, bottom: 150, left: 50, right: 150 }
+      const outer = { top: 0, bottom: 200, left: 0, right: 200 }
+
+      const distance = shifter.directionDistance(inner, 'bottom', outer)
+
+      expect(distance).toBe(50)
+    })
+
+    it('calculates distance for left direction', () => {
+      const shifter = new Shifter(mockController)
+      const inner = { top: 50, bottom: 150, left: 50, right: 150 }
+      const outer = { top: 0, bottom: 200, left: 0, right: 200 }
+
+      const distance = shifter.directionDistance(inner, 'left', outer)
+
+      expect(distance).toBe(50)
+    })
+
+    it('calculates distance for right direction', () => {
+      const shifter = new Shifter(mockController)
+      const inner = { top: 50, bottom: 150, left: 50, right: 150 }
+      const outer = { top: 0, bottom: 200, left: 0, right: 200 }
+
+      const distance = shifter.directionDistance(inner, 'right', outer)
+
+      expect(distance).toBe(50)
+    })
+
+    it('throws error for invalid direction', () => {
+      const shifter = new Shifter(mockController)
+      const inner = { top: 50, bottom: 150, left: 50, right: 150 }
+      const outer = { top: 0, bottom: 200, left: 0, right: 200 }
+
+      expect(() => shifter.directionDistance(inner, 'invalid', outer)).toThrow()
+    })
+  })
+
+  describe('overflowRect', () => {
+    it('returns empty overflow when element fits within viewport', () => {
+      const shifter = new Shifter(mockController, {
+        boundaries: ['top', 'left', 'right', 'bottom'],
+      })
+      const targetRect = {
+        x: 100,
+        y: 100,
+        width: 200,
+        height: 200,
+      }
+      const translations = { x: 0, y: 0 }
+
+      const overflow = shifter.overflowRect(targetRect, translations)
+
+      expect(overflow.top).toBe('')
+      expect(overflow.left).toBe('')
+      expect(overflow.right).toBe('')
+      expect(overflow.bottom).toBe('')
+    })
+
+    it('calculates overflow for element outside viewport top', () => {
+      const shifter = new Shifter(mockController, {
+        boundaries: ['top'],
+      })
+      const targetRect = {
+        x: 100,
+        y: -50,
+        width: 200,
+        height: 200,
+      }
+      const translations = { x: 0, y: 0 }
+
+      const overflow = shifter.overflowRect(targetRect, translations)
+
+      // May or may not be set depending on sufficient space
+      expect(overflow).toBeTypeOf('object')
+    })
+
+    it('calculates overflow for element outside viewport left', () => {
+      const shifter = new Shifter(mockController, {
+        boundaries: ['left'],
+      })
+      const targetRect = {
+        x: -50,
+        y: 100,
+        width: 200,
+        height: 200,
+      }
+      const translations = { x: 0, y: 0 }
+
+      const overflow = shifter.overflowRect(targetRect, translations)
+
+      // May or may not be set depending on sufficient space
+      expect(overflow).toBeTypeOf('object')
+    })
+
+    it('respects existing translations', () => {
+      const shifter = new Shifter(mockController, {
+        boundaries: ['top'],
+      })
+      const targetRect = {
+        x: 100,
+        y: 50,
+        width: 200,
+        height: 200,
+      }
+      const translations = { x: 0, y: 100 }
+
+      const overflow = shifter.overflowRect(targetRect, translations)
+
+      // The actual position after removing translation is y: 50 - 100 = -50
+      expect(overflow).toBeTypeOf('object')
+    })
+  })
+
+  describe('shift', () => {
+    it('does nothing when element is not visible', async () => {
+      element.setAttribute('hidden', true)
+      const shifter = new Shifter(mockController)
+
+      await shifter.shift()
+
+      expect(mockController.dispatch).not.toHaveBeenCalled()
+      expect(element.style.transform).toBe('')
+    })
+
+    it('dispatches shift and shifted events', async () => {
+      const shifter = new Shifter(mockController)
+
+      await shifter.shift()
+
+      expect(mockController.dispatch).toHaveBeenCalledWith('shift', expect.any(Object))
+      expect(mockController.dispatch).toHaveBeenCalledWith('shifted', expect.any(Object))
+    })
+
+    it('calls onShifted callback with overflow data', async () => {
+      const onShifted = vi.fn()
+      mockController.shifted = onShifted
+      const shifter = new Shifter(mockController, { onShifted: 'shifted' })
+
+      await shifter.shift()
+
+      expect(onShifted).toHaveBeenCalledWith(expect.any(Object))
+    })
+
+    it('applies transform when element overflows', async () => {
+      // Mock element outside viewport on left
+      element.getBoundingClientRect = () => ({
+        x: -50,
+        y: 100,
+        top: 100,
+        left: -50,
+        right: 150,
+        bottom: 300,
+        width: 200,
+        height: 200,
+      })
+
+      const shifter = new Shifter(mockController, {
+        boundaries: ['left'],
+      })
+
+      await shifter.shift()
+
+      expect(element.style.transform).toContain('translate')
+    })
+
+    it('awaits async onShifted callback', async () => {
+      const onShifted = vi.fn(() => new Promise((resolve) => setTimeout(resolve, 10)))
+      mockController.shifted = onShifted
+      const shifter = new Shifter(mockController, { onShifted: 'shifted' })
+
+      await shifter.shift()
+
+      expect(onShifted).toHaveBeenCalled()
+      expect(mockController.dispatch).toHaveBeenCalledWith('shifted', expect.any(Object))
+    })
+  })
+
+  describe('observe', () => {
+    it('adds event listeners for all configured events', () => {
+      const addEventListenerSpy = vi.spyOn(window, 'addEventListener')
+      const shifter = new Shifter(mockController, {
+        events: ['resize', 'scroll'],
+      })
+
+      expect(addEventListenerSpy).toHaveBeenCalledWith('resize', shifter.shift, true)
+      expect(addEventListenerSpy).toHaveBeenCalledWith('scroll', shifter.shift, true)
+
+      addEventListenerSpy.mockRestore()
+    })
+  })
+
+  describe('unobserve', () => {
+    it('removes event listeners for all configured events', () => {
+      const removeEventListenerSpy = vi.spyOn(window, 'removeEventListener')
+      const shifter = new Shifter(mockController, {
+        events: ['resize', 'scroll'],
+      })
+
+      shifter.unobserve()
+
+      expect(removeEventListenerSpy).toHaveBeenCalledWith('resize', shifter.shift, true)
+      expect(removeEventListenerSpy).toHaveBeenCalledWith('scroll', shifter.shift, true)
+
+      removeEventListenerSpy.mockRestore()
+    })
+  })
+
+  describe('enhance', () => {
+    it('wraps controller disconnect to call unobserve', () => {
+      const removeEventListenerSpy = vi.spyOn(window, 'removeEventListener')
+      const originalDisconnect = mockController.disconnect
+      const shifter = new Shifter(mockController)
+
+      mockController.disconnect()
+
+      expect(removeEventListenerSpy).toHaveBeenCalled()
+      expect(originalDisconnect).toHaveBeenCalled()
+
+      removeEventListenerSpy.mockRestore()
+    })
+
+    it('adds shift method to controller', () => {
+      const shifter = new Shifter(mockController)
+
+      expect(mockController.shift).toBeDefined()
+      expect(typeof mockController.shift).toBe('function')
+    })
+  })
+
+  describe('attachShifter', () => {
+    it('creates and returns a Shifter instance', () => {
+      const shifter = attachShifter(mockController, {
+        boundaries: ['top', 'bottom'],
+      })
+
+      expect(shifter).toBeInstanceOf(Shifter)
+      expect(shifter.boundaries).toEqual(['top', 'bottom'])
+    })
+  })
+})

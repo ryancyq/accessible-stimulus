@@ -58,7 +58,7 @@ export class Shifter extends Plumber {
       x: targetRect.x - translations.x,
       y: targetRect.y - translations.y,
       width: targetRect.width,
-      height: targetRect.width,
+      height: targetRect.height,
     });
     for (const direction of this.boundaries) {
       const distance = this.directionDistance(currentRect, direction, viewport);

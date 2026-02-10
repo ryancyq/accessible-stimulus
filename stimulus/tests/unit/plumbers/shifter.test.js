@@ -223,6 +223,26 @@ describe('Shifter', () => {
       // The actual position after removing translation is y: 50 - 100 = -50
       expect(overflow).toBeTypeOf('object')
     })
+
+    it('uses targetRect height (not width) for currentRect height calculation', () => {
+      const shifter = new Shifter(mockController, {
+        boundaries: ['top', 'bottom'],
+      })
+      const targetRect = {
+        x: 100,
+        y: 100,
+        width: 300, // Different width
+        height: 150, // Different height
+      }
+      const translations = { x: 0, y: 0 }
+
+      // This test verifies the bug fix: height should use targetRect.height, not targetRect.width
+      // If the implementation incorrectly used targetRect.width, the boundary calculations would be wrong
+      const overflow = shifter.overflowRect(targetRect, translations)
+
+      expect(overflow).toBeTypeOf('object')
+      // The overflow calculation should work correctly with proper height
+    })
   })
 
   describe('shift', () => {

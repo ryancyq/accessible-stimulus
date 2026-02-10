@@ -1,30 +1,51 @@
-/**
- * Test setup for Vitest
- */
+import { beforeEach, afterEach, vi } from 'vitest'
 
-import { expect, afterEach } from 'vitest';
-import { cleanup } from '@testing-library/dom';
+// Mock window.matchMedia if it doesn't exist
+beforeEach(() => {
+  if (!window.matchMedia) {
+    Object.defineProperty(window, 'matchMedia', {
+      writable: true,
+      value: vi.fn().mockImplementation((query) => ({
+        matches: false,
+        media: query,
+        onchange: null,
+        addListener: vi.fn(),
+        removeListener: vi.fn(),
+        addEventListener: vi.fn(),
+        removeEventListener: vi.fn(),
+        dispatchEvent: vi.fn(),
+      })),
+    })
+  }
 
-// Cleanup after each test
+  // Set default viewport dimensions
+  Object.defineProperty(window, 'innerWidth', {
+    writable: true,
+    configurable: true,
+    value: 1024,
+  })
+
+  Object.defineProperty(window, 'innerHeight', {
+    writable: true,
+    configurable: true,
+    value: 768,
+  })
+
+  Object.defineProperty(document.documentElement, 'clientWidth', {
+    writable: true,
+    configurable: true,
+    value: 1024,
+  })
+
+  Object.defineProperty(document.documentElement, 'clientHeight', {
+    writable: true,
+    configurable: true,
+    value: 768,
+  })
+})
+
+// Clean up after each test
 afterEach(() => {
-  cleanup();
-  document.body.innerHTML = '';
-});
-
-// Add custom matchers if needed
-expect.extend({
-  toBeAccessible(element: HTMLElement) {
-    // Basic accessibility checks
-    const hasRole = element.hasAttribute('role') || element.tagName !== 'DIV';
-    const hasLabel =
-      element.hasAttribute('aria-label') ||
-      element.hasAttribute('aria-labelledby') ||
-      element.textContent?.trim() !== '';
-
-    return {
-      pass: hasRole && hasLabel,
-      message: () =>
-        `Expected element to be accessible with proper role and labeling`,
-    };
-  },
-});
+  document.body.innerHTML = ''
+  vi.clearAllMocks()
+})

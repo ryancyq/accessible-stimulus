@@ -20,9 +20,7 @@ export function isActivationKey(event) {
  * Check if an arrow key was pressed
  */
 export function isArrowKey(event) {
-  return ['ArrowUp', 'ArrowDown', 'ArrowLeft', 'ArrowRight'].includes(
-    event.key
-  );
+  return ['ArrowUp', 'ArrowDown', 'ArrowLeft', 'ArrowRight'].includes(event.key);
 }
 
 /**
@@ -55,10 +53,7 @@ export class RovingTabIndex {
       case 'ArrowUp':
       case 'ArrowLeft':
         event.preventDefault();
-        newIndex =
-          this.currentIndex === 0
-            ? this.items.length - 1
-            : this.currentIndex - 1;
+        newIndex = this.currentIndex === 0 ? this.items.length - 1 : this.currentIndex - 1;
         break;
       case 'Home':
         event.preventDefault();

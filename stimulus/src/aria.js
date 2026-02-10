@@ -6,16 +6,10 @@
  * Announce a message to screen readers using an aria-live region
  */
 export function announce(message, options = {}) {
-  const {
-    politeness = 'polite',
-    atomic = true,
-    relevant = 'additions text',
-  } = options;
+  const { politeness = 'polite', atomic = true, relevant = 'additions text' } = options;
 
   // Find or create live region
-  let liveRegion = document.querySelector(
-    `[data-live-region="${politeness}"]`
-  );
+  let liveRegion = document.querySelector(`[data-live-region="${politeness}"]`);
 
   if (!liveRegion) {
     liveRegion = document.createElement('div');

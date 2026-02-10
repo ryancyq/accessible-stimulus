@@ -33,8 +33,8 @@ export class Visibility extends Plumber {
    * @param {Object} controller - Stimulus controller instance
    * @param {Object} [options] - Configuration options
    * @param {string} [options.visibility='visibility'] - Namespace for visibility helpers
-   * @param {string} [options.onShown='shown'] - Callback name when shown
-   * @param {string} [options.onHidden='hidden'] - Callback name when hidden
+   * @param {string} [options.onShown='shown'] - Method name on plumber instance called after showing
+   * @param {string} [options.onHidden='hidden'] - Method name on plumber instance called after hiding
    */
   constructor(controller, options = {}) {
     const { visibility, onShown, onHidden } = Object.assign({}, defaultOptions, options);
@@ -76,7 +76,7 @@ export class Visibility extends Plumber {
     this.dispatch('show');
     toggleVisibility(this.element, true);
 
-    await this.awaitCallback('onShown', { target: this.element });
+    await this.awaitCallback(this.onShown, { target: this.element });
     this.dispatch('shown');
   }
 
@@ -90,7 +90,7 @@ export class Visibility extends Plumber {
     this.dispatch('hide');
     toggleVisibility(this.element, false);
 
-    await this.awaitCallback('onHidden', { target: this.element });
+    await this.awaitCallback(this.onHidden, { target: this.element });
     this.dispatch('hidden');
   }
 

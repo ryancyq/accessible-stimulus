@@ -176,22 +176,24 @@ describe('Visibility', () => {
       expect(element.classList.contains('hidden')).toBe(false)
     })
 
-    it('calls onShown callback', async () => {
+    it('calls onShown callback when defined as method on visibility plumber', async () => {
       element.classList.add('hidden')
       const onShown = vi.fn()
-      mockController.shown = onShown
       const visibility = new Visibility(mockController, { onShown: 'shown' })
+      // Define the callback method on the visibility plumber instance
+      visibility.shown = onShown
 
       await visibility.show()
 
       expect(onShown).toHaveBeenCalledWith({ target: element })
     })
 
-    it('awaits async onShown callback', async () => {
+    it('awaits async onShown callback when defined on visibility plumber', async () => {
       element.classList.add('hidden')
       const onShown = vi.fn(() => new Promise((resolve) => setTimeout(resolve, 10)))
-      mockController.shown = onShown
       const visibility = new Visibility(mockController, { onShown: 'shown' })
+      // Define the callback method on the visibility plumber instance
+      visibility.shown = onShown
 
       await visibility.show()
 
@@ -235,20 +237,22 @@ describe('Visibility', () => {
       expect(element.classList.contains('hidden')).toBe(true)
     })
 
-    it('calls onHidden callback', async () => {
+    it('calls onHidden callback when defined as method on visibility plumber', async () => {
       const onHidden = vi.fn()
-      mockController.hidden = onHidden
       const visibility = new Visibility(mockController, { onHidden: 'hidden' })
+      // Define the callback method on the visibility plumber instance
+      visibility.hidden = onHidden
 
       await visibility.hide()
 
       expect(onHidden).toHaveBeenCalledWith({ target: element })
     })
 
-    it('awaits async onHidden callback', async () => {
+    it('awaits async onHidden callback when defined on visibility plumber', async () => {
       const onHidden = vi.fn(() => new Promise((resolve) => setTimeout(resolve, 10)))
-      mockController.hidden = onHidden
       const visibility = new Visibility(mockController, { onHidden: 'hidden' })
+      // Define the callback method on the visibility plumber instance
+      visibility.hidden = onHidden
 
       await visibility.hide()
 

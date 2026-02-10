@@ -38,5 +38,5 @@ jobs:
         working-directory: stimulus
 
       - name: Test
-        run: npm run ci-test
+        run: npm run test
         working-directory: stimulus

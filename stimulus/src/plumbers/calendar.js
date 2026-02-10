@@ -19,6 +19,25 @@ const defaultOptions = {
 };
 
 export class Calendar extends Plumber {
+  /**
+   * Creates a new Calendar plumber instance with date navigation and validation.
+   * @param {Object} controller - Stimulus controller instance
+   * @param {Object} [options] - Configuration options
+   * @param {string[]} [options.locales=['default']] - Locale identifiers for date formatting
+   * @param {string|Date} [options.today=''] - Initial "today" date
+   * @param {number} [options.day] - Initial day
+   * @param {number} [options.month] - Initial month (0-11)
+   * @param {number} [options.year] - Initial year
+   * @param {string|Date} [options.since] - Minimum selectable date
+   * @param {string|Date} [options.till] - Maximum selectable date
+   * @param {Array<string|Date>} [options.disabledDates=[]] - Array of disabled dates
+   * @param {string[]|number[]} [options.disabledWeekdays=[]] - Array of disabled weekdays
+   * @param {string[]|number[]} [options.disabledDays=[]] - Array of disabled day numbers
+   * @param {string[]|number[]} [options.disabledMonths=[]] - Array of disabled months
+   * @param {string[]|number[]} [options.disabledYears=[]] - Array of disabled years
+   * @param {number} [options.firstDayOfWeek=0] - First day of week (0=Sunday, 1=Monday, etc.)
+   * @param {string} [options.onNavigated='navigated'] - Callback name when navigated
+   */
   constructor(controller, options = {}) {
     super(controller, options);
 
@@ -49,12 +68,19 @@ export class Calendar extends Plumber {
     this.enhance();
   }
 
+  /**
+   * Builds all calendar data structures (days of week, days of month, months of year).
+   */
   build() {
     this.daysOfWeek = this.buildDaysOfWeek();
     this.daysOfMonth = this.buildDaysOfMonth();
     this.monthsOfYear = this.buildMonthsOfYear();
   }
 
+  /**
+   * Builds array of weekday objects with localized names.
+   * @returns {Array<Object>} Array of weekday objects
+   */
   buildDaysOfWeek() {
     const longFormatter = new Intl.DateTimeFormat(this.localesValue, { weekday: 'long' });
     const shortFormatter = new Intl.DateTimeFormat(this.localesValue, { weekday: 'short' });
@@ -74,6 +100,10 @@ export class Calendar extends Plumber {
     return daysOfWeek;
   }
 
+  /**
+   * Builds array of day objects for the current month view, including overflow from adjacent months.
+   * @returns {Array<Object>} Array of day objects with metadata
+   */
   buildDaysOfMonth() {
     const currentMonth = this.month;
     const currentYear = this.year;
@@ -106,6 +136,10 @@ export class Calendar extends Plumber {
     return daysOfMonth;
   }
 
+  /**
+   * Builds array of month objects with localized names for the current year.
+   * @returns {Array<Object>} Array of month objects
+   */
   buildMonthsOfYear() {
     const longFormatter = new Intl.DateTimeFormat(this.localesValue, { month: 'long' });
     const shortFormatter = new Intl.DateTimeFormat(this.localesValue, { month: 'short' });
@@ -125,10 +159,18 @@ export class Calendar extends Plumber {
     return monthsOfYear;
   }
 
+  /**
+   * Gets the current "today" reference date.
+   * @returns {Date} Today's date
+   */
   get today() {
     return this.now;
   }
 
+  /**
+   * Sets the "today" reference date.
+   * @param {Date} value - New today date
+   */
   set today(value) {
     if (!isValidDate(value)) return;
 
@@ -139,6 +181,10 @@ export class Calendar extends Plumber {
     this.now = new Date(year, month, day).toISOString();
   }
 
+  /**
+   * Gets the current selected date.
+   * @returns {Date|null} Current date or null if not fully specified
+   */
   get current() {
     if (typeof this.year === 'number' && typeof this.month === 'number' && typeof this.day === 'number') {
       return tryParseDate(this.year, this.month, this.day);
@@ -146,6 +192,10 @@ export class Calendar extends Plumber {
     return null;
   }
 
+  /**
+   * Sets the current selected date.
+   * @param {Date} value - New current date
+   */
   set current(value) {
     if (!isValidDate(value)) return;
 
@@ -154,6 +204,11 @@ export class Calendar extends Plumber {
     this.year = value.getFullYear();
   }
 
+  /**
+   * Navigates to a specific date, dispatching events and rebuilding calendar.
+   * @param {Date} to - Target date to navigate to
+   * @returns {Promise<void>}
+   */
   navigate = async (to) => {
     if (!isValidDate(to)) return;
 
@@ -170,6 +225,12 @@ export class Calendar extends Plumber {
     this.dispatch('navigated', { detail: { from: fromIso, to: toIso } });
   };
 
+  /**
+   * Steps the calendar by a given amount in a specific unit (year, month, or day).
+   * @param {string} type - Type of step ('year', 'month', 'day')
+   * @param {number} value - Number of units to step (positive or negative)
+   * @returns {Promise<void>}
+   */
   step = async (type, value) => {
     if (value === 0) return;
 
@@ -193,6 +254,11 @@ export class Calendar extends Plumber {
     await this.navigate(target);
   };
 
+  /**
+   * Checks if a date is disabled based on configured rules.
+   * @param {Date} date - Date to check
+   * @returns {boolean} True if date is disabled
+   */
   isDisabled = (date) => {
     if (!isValidDate(date)) return false;
 
@@ -244,6 +310,11 @@ export class Calendar extends Plumber {
     return false;
   };
 
+  /**
+   * Checks if a date is within the allowed range (since/till).
+   * @param {Date} date - Date to check
+   * @returns {boolean} True if date is within range
+   */
   isWithinRange = (date) => {
     if (!isValidDate(date)) return false;
 
@@ -316,4 +387,10 @@ export class Calendar extends Plumber {
   }
 }
 
+/**
+ * Factory function to create and attach a Calendar plumber to a controller.
+ * @param {Object} controller - Stimulus controller instance
+ * @param {Object} [options] - Configuration options
+ * @returns {Calendar} Calendar plumber instance
+ */
 export const attachCalendar = (controller, options) => new Calendar(controller, options);

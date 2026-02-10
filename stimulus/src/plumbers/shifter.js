@@ -8,6 +8,14 @@ const defaultOptions = {
 };
 
 export class Shifter extends Plumber {
+  /**
+   * Creates a new Shifter plumber instance for viewport boundary shifting.
+   * @param {Object} controller - Stimulus controller instance
+   * @param {Object} [options] - Configuration options
+   * @param {string[]} [options.events=['resize']] - Events triggering shift calculation
+   * @param {string[]} [options.boundaries=['top','left','right']] - Boundaries to check (valid values: 'top', 'bottom', 'left', 'right')
+   * @param {string} [options.onShifted='shifted'] - Callback name when shifted
+   */
   constructor(controller, options = {}) {
     super(controller, options);
 
@@ -20,6 +28,10 @@ export class Shifter extends Plumber {
     this.observe();
   }
 
+  /**
+   * Calculates and applies transform to shift element within viewport boundaries.
+   * @returns {Promise<void>}
+   */
   shift = async () => {
     if (!this.visible) return;
 
@@ -33,6 +45,12 @@ export class Shifter extends Plumber {
     this.dispatch('shifted', { detail: overflow });
   };
 
+  /**
+   * Calculates overflow distances for each boundary direction.
+   * @param {DOMRect} targetRect - Target element's bounding rect
+   * @param {Object} translations - Current transform translations
+   * @returns {Object} Overflow distances by direction
+   */
   overflowRect(targetRect, translations) {
     const overflow = {};
     const viewport = viewportRect();
@@ -55,6 +73,14 @@ export class Shifter extends Plumber {
     return overflow;
   }
 
+  /**
+   * Calculates distance from inner rect to outer boundary in given direction.
+   * @param {Object} inner - Inner rect object
+   * @param {string} direction - Direction ('top', 'bottom', 'left', 'right')
+   * @param {Object} outer - Outer rect object
+   * @returns {number} Distance to boundary (negative if overflowing)
+   * @throws {string} If direction is invalid
+   */
   directionDistance(inner, direction, outer) {
     switch (direction) {
       case 'top':
@@ -68,6 +94,11 @@ export class Shifter extends Plumber {
     }
   }
 
+  /**
+   * Extracts current translate values from element's transform style.
+   * @param {HTMLElement} target - Target element
+   * @returns {Object} Translation object with x and y values
+   */
   elementTranslations(target) {
     const style = window.getComputedStyle(target);
     const matrix = style['transform'] || style['webkitTransform'] || style['mozTransform'];
@@ -85,12 +116,18 @@ export class Shifter extends Plumber {
     return { x: 0, y: 0 };
   }
 
+  /**
+   * Starts observing configured events for shifting.
+   */
   observe() {
     this.events.forEach((event) => {
       window.addEventListener(event, this.shift, true);
     });
   }
 
+  /**
+   * Stops observing events for shifting.
+   */
   unobserve() {
     this.events.forEach((event) => {
       window.removeEventListener(event, this.shift, true);
@@ -110,4 +147,10 @@ export class Shifter extends Plumber {
   }
 }
 
+/**
+ * Factory function to create and attach a Shifter plumber to a controller.
+ * @param {Object} controller - Stimulus controller instance
+ * @param {Object} [options] - Configuration options
+ * @returns {Shifter} Shifter plumber instance
+ */
 export const attachShifter = (controller, options) => new Shifter(controller, options);

@@ -6,9 +6,9 @@ const defaultOptions = {
   url: '',
   reload: 'never',
   stale: 3600,
-  onLoad: 'load',
-  onLoading: 'loading',
-  onLoaded: 'loaded',
+  onLoad: 'contentLoad',
+  onLoading: 'contentLoading',
+  onLoaded: 'contentLoaded',
 };
 
 export class ContentLoader extends Plumber {
@@ -20,9 +20,9 @@ export class ContentLoader extends Plumber {
    * @param {string} [options.url=''] - URL to fetch content from
    * @param {string} [options.reload='never'] - Reload strategy ('never', 'always', or 'stale')
    * @param {number} [options.stale=3600] - Seconds before content becomes stale
-   * @param {string} [options.onLoad='load'] - Callback name to check if loadable
-   * @param {string} [options.onLoading='loading'] - Callback name to load content
-   * @param {string} [options.onLoaded='loaded'] - Callback name after loading
+   * @param {string} [options.onLoad='contentLoad'] - Callback name to check if loadable
+   * @param {string} [options.onLoading='contentLoading'] - Callback name to load content
+   * @param {string} [options.onLoaded='contentLoaded'] - Callback name after loading
    */
   constructor(controller, options = {}) {
     super(controller, options);
@@ -54,7 +54,7 @@ export class ContentLoader extends Plumber {
         return true;
       default: {
         const loadedAt = tryParseDate(this.loadedAt);
-        return loadedAt && new Date() - loadedAt > this.state * 1000;
+        return loadedAt && new Date() - loadedAt > this.stale * 1000;
       }
     }
   }
@@ -66,7 +66,7 @@ export class ContentLoader extends Plumber {
    * @param {string} params.url - URL to load from
    * @returns {Promise<boolean>} True if content should be loaded
    */
-  onLoad = async ({ url }) => !!url;
+  contentLoad = async ({ url }) => !!url;
 
   /**
    * Loads content from remote or local source.
@@ -75,8 +75,8 @@ export class ContentLoader extends Plumber {
    * @param {string} params.url - URL to load from
    * @returns {Promise<string>} Loaded content
    */
-  onLoading = async ({ url }) => {
-    return url ? await this.remoteLoader(url) : await this.loader();
+  contentLoading = async ({ url }) => {
+    return url ? await this.remoteContentLoader(url) : await this.contentLoader();
   };
 
   /**
@@ -84,7 +84,7 @@ export class ContentLoader extends Plumber {
    * Override this method to provide static content.
    * @returns {Promise<string>} Local content
    */
-  loader = async () => '';
+  contentLoader = async () => '';
 
   /**
    * Fetches content from a remote URL.
@@ -92,7 +92,7 @@ export class ContentLoader extends Plumber {
    * @param {string} url - URL to fetch from
    * @returns {Promise<string>} Fetched content
    */
-  remoteLoader = async (url) => (await fetch(url)).text();
+  remoteContentLoader = async (url) => (await fetch(url)).text();
 
   /**
    * Loads content from remote or local source with lifecycle events.
@@ -103,17 +103,17 @@ export class ContentLoader extends Plumber {
   load = async () => {
     if (this.loadedAt && !this.reloadable) return;
 
-    this.dispatch('load', { detail: { url: this.url } });
     const loadable = await this.awaitCallback(this.onLoad, { url: this.url });
+    this.dispatch('load', { detail: { url: this.url } });
     if (!loadable) return;
 
-    this.dispatch('loading', { detail: { url: this.url } });
     const content = await this.awaitCallback(this.onLoading, { url: this.url });
+    this.dispatch('loading', { detail: { url: this.url } });
     if (!content) return;
 
-    await this.awaitCallback('onLoaded', { url: this.url, content: content });
+    await this.awaitCallback(this.onLoaded, { url: this.url, content });
     this.loadedAt = new Date().getTime();
-    this.dispatch('loaded', { detail: { url: this.url, content: content } });
+    this.dispatch('loaded', { detail: { url: this.url, content } });
   };
 
   enhance() {

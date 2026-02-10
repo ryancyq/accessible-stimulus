@@ -20,6 +20,11 @@ export function defineRect({ x, y, width, height }) {
   };
 }
 
+/**
+ * Maps each direction to its opposite direction.
+ * Used for flipping and boundary calculations.
+ * @type {Object.<string, string>}
+ */
 export const directionMap = {
   top: 'bottom',
   bottom: 'top',

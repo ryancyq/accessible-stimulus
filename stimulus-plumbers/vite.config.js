@@ -10,9 +10,9 @@ export default defineConfig({
   build: {
     lib: {
       entry: resolve(__dirname, 'src/index.js'),
-      name: 'AccessibleStimulusControllers',
+      name: 'StimulusPlumbersControllers',
       formats: ['es', 'umd'],
-      fileName: (format) => `accessible-stimulus-controllers.${format}.js`
+      fileName: (format) => `stimulus-plumbers-controllers.${format}.js`
     },
     rollupOptions: {
       external: ['@hotwired/stimulus'],

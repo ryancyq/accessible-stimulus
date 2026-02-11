@@ -1,5 +1,5 @@
 {
-  "name": "@accessible-stimulus/controllers",
+  "name": "@stimulus-plumbers/controllers",
   "version": "0.1.0",
   "description": "Stimulus controllers following WCAG standards",
   "type": "module",
@@ -31,7 +31,7 @@
   "license": "MIT",
   "repository": {
     "type": "git",
-    "url": "https://github.com/ryanchang/accessible-stimulus.git",
+    "url": "https://github.com/ryanchang/stimulus-plumbers.git",
     "directory": "stimulus"
   },
   "peerDependencies": {

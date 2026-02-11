@@ -1,8 +1,4 @@
 /**
- * Focus management utilities for accessible components
- */
-
-/**
  * Query selector for all focusable elements
  */
 export const FOCUSABLE_SELECTOR = [

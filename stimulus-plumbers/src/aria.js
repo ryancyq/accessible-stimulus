@@ -1,8 +1,4 @@
 /**
- * ARIA utilities for accessible components
- */
-
-/**
  * Announce a message to screen readers using an aria-live region
  */
 export function announce(message, options = {}) {

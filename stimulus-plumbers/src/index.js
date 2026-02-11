@@ -1,7 +1,7 @@
 /**
- * @accessible-stimulus/controllers
+ * @stimulus-plumbers/controllers
  *
- * Accessible Stimulus controllers for UI components
+ * Stimulus Plumbers controllers for UI components
  * Following WCAG 2.1+ and WAI-ARIA best practices
  */
 

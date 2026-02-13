@@ -10,8 +10,9 @@ require "active_support/core_ext"
 
 # Minimal test application for component testing
 class TestApp < Rails::Application
-  # Load Rails 8.1 defaults
-  config.load_defaults 8.1
+  # Load defaults for the current Rails version
+  rails_version = Rails.gem_version.segments.first(2).join(".")
+  config.load_defaults rails_version
 
   # Application-level configuration
   config.secret_key_base = "test_secret_key_base"

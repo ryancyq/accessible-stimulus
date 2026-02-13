@@ -115,6 +115,7 @@ GEM
     mini_mime (1.1.5)
     minitest (6.0.1)
       prism (~> 1.5)
+    mutex_m (0.2.0)
     net-imap (0.6.2)
       date
       net-protocol
@@ -252,6 +253,7 @@ DEPENDENCIES
   appraisal (~> 2.5.0)
   bigdecimal
   capybara (~> 3.39)
+  mutex_m
   rails (~> 6.1.0)
   railties (~> 6.1.0)
   rake (~> 13.3)

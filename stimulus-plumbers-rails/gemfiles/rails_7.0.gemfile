@@ -13,6 +13,7 @@ group :development, :test do
   gem "simplecov-cobertura", require: false
   gem "bigdecimal"
   gem "tsort"
+  gem "mutex_m"
 end
 
 group :development do

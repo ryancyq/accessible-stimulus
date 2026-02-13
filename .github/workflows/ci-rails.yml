@@ -40,9 +40,11 @@ jobs:
           - "8.0"
           - "8.1"
         include:
-          - ruby-version: "3.2"
-            rails-version: "edge"
           - ruby-version: "3.3"
+            rails-version: "edge"
+          - ruby-version: "3.4"
+            rails-version: "edge"
+          - ruby-version: "4.0"
             rails-version: "edge"
           - ruby-version: "head"
             rails-version: "edge"

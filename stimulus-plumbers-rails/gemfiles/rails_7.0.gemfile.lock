@@ -81,6 +81,7 @@ GEM
       thor (>= 0.14.0)
     ast (2.4.3)
     base64 (0.3.0)
+    bigdecimal (4.0.1)
     builder (3.3.0)
     capybara (3.40.0)
       addressable
@@ -247,6 +248,7 @@ PLATFORMS
 
 DEPENDENCIES
   appraisal (~> 2.5.0)
+  bigdecimal
   capybara (~> 3.39)
   rails (~> 7.0.0)
   railties (~> 7.0.0)

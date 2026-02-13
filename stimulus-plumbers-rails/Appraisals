@@ -13,6 +13,7 @@
 
     group :development, :test do
       gem "rails", "~> #{rails_version}"
+      gem "bigdecimal" if rails_version < "7.1"
     end
   end
 end

@@ -1,0 +1,32 @@
+name: CI (Stimulus)
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+  schedule:
+    - cron: '0 12 * * 5'
+
+defaults:
+  run:
+    working-directory: stimulus-plumbers
+
+permissions:
+  contents: read
+
+jobs:
+  test-stimulus:
+    name: Stimulus Tests
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v6
+      - uses: actions/setup-node@v6
+        with:
+          cache: npm
+          cache-dependency-path: stimulus-plumbers/package-lock.json
+
+      - run: npm ci
+      - run: npm run format:check
+      - run: npm run lint
+      - run: npm run test

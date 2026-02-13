@@ -1,0 +1,30 @@
+# frozen_string_literal: true
+
+[
+  "6.1.0",
+  "7.0.0",
+  "7.1.0",
+  "7.2.0",
+  "8.0.0",
+  "8.1.0"
+].each do |rails_version|
+  appraise "rails-#{rails_version.chomp ".0"}" do
+    gem "railties", "~> #{rails_version}"
+
+    group :development, :test do
+      gem "rails", "~> #{rails_version}"
+      gem "benchmark" if rails_version < "7.0"
+      gem "bigdecimal" if rails_version < "7.1"
+      gem "tsort" if rails_version < "7.1"
+      gem "mutex_m" if rails_version < "7.1"
+    end
+  end
+end
+
+appraise "rails-edge" do
+  gem "railties", github: "rails/rails", branch: "main"
+
+  group :development, :test do
+    gem "rails", github: "rails/rails", branch: "main"
+  end
+end

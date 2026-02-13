@@ -1,0 +1,18 @@
+# Gem build artifacts
+/pkg/
+*.gem
+
+# RSpec
+.rspec_status
+
+# Coverage reports
+/coverage/
+
+# IDE files
+.DS_Store
+.idea/
+.vscode/
+
+# Bundler
+/.bundle/
+/vendor/bundle/

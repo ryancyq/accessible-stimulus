@@ -75,6 +75,7 @@ GEM
       thor (>= 0.14.0)
     ast (2.4.3)
     base64 (0.3.0)
+    benchmark (0.4.0)
     bigdecimal (4.0.1)
     builder (3.3.0)
     capybara (3.40.0)
@@ -251,6 +252,7 @@ PLATFORMS
 
 DEPENDENCIES
   appraisal (~> 2.5.0)
+  benchmark
   bigdecimal
   capybara (~> 3.39)
   mutex_m

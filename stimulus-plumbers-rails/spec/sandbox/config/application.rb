@@ -2,6 +2,7 @@
 
 require_relative "boot"
 
+require "logger" if RUBY_VERSION >= "2.7" # for rails < 7.0
 require "rails"
 require "action_controller"
 require "action_view"

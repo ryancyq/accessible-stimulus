@@ -315,7 +315,7 @@ PLATFORMS
 
 DEPENDENCIES
   appraisal (~> 2.5.0)
-  capybara (~> 3.40)
+  capybara (~> 3.39)
   rails!
   railties!
   rake (~> 13.3)

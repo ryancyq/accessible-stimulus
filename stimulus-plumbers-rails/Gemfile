@@ -25,5 +25,5 @@ group :development do
 end
 
 group :test do
-  gem "capybara", "~> 3.40"
+  gem "capybara", "~> 3.39" # last version to support Ruby 2.7
 end

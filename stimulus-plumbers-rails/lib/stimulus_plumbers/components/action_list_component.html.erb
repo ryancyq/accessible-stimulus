@@ -1,0 +1,32 @@
+<% if sections? %>
+  <%= tag.ul **component_attrs do %>
+    <% sections.each.with_index do |section, index| %>
+      <% if index > 0 %>
+        <%= divider %>
+      <% end %>
+      <li>
+        <%= section %>
+      </li>
+    <% end %>
+    <% if items? %>
+      <%= divider %>
+      <li>
+        <%= render StimulusPlumbers::Components::ActionList::SectionComponent.new do |section| %>
+          <% items.each do |item| %>
+            <% section.with_item do %>
+              <%= item %>
+            <% end %>
+          <% end %>
+        <% end %>
+      </li>
+    <% end %>
+  <% end %>
+<% else %>
+  <%= render StimulusPlumbers::Components::ActionList::SectionComponent.new(**component_attrs) do |section| %>
+    <% items.each do |item| %>
+      <% section.with_item do %>
+        <%= item %>
+      <% end %>
+    <% end %>
+  <% end %>
+<% end %>

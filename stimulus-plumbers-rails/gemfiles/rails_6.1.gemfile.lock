@@ -223,6 +223,7 @@ GEM
       sprockets (>= 3.0.0)
     thor (1.5.0)
     timeout (0.6.0)
+    tsort (0.2.0)
     tzinfo (2.0.6)
       concurrent-ruby (~> 1.0)
     unicode-display_width (3.2.0)
@@ -261,6 +262,7 @@ DEPENDENCIES
   simplecov (~> 0.22.0)
   simplecov-cobertura
   stimulus_plumbers!
+  tsort
   view_component (~> 3.0)
 
 BUNDLED WITH

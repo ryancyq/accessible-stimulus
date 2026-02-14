@@ -11,4 +11,6 @@ export * from './keyboard.js';
 export * from './aria.js';
 
 // Export Stimulus controllers
-export { default as DialogController } from './controllers/dialog_controller.js';
+export { default as ModalController } from './controllers/modal_controller.js';
+export { default as DismisserController } from './controllers/dismisser_controller.js';
+export { default as FlipperController } from './controllers/flipper_controller.js';

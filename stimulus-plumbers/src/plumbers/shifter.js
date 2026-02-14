@@ -41,7 +41,7 @@ export class Shifter extends Plumber {
     const translateY = overflow['top'] || overflow['bottom'] || 0;
     this.element.style.transform = `translate(${translateX}px, ${translateY}px)`;
 
-    await this.awaitCallback('onShifted', overflow);
+    await this.awaitCallback(this.onShifted, overflow);
     this.dispatch('shifted', { detail: overflow });
   };
 

@@ -39,7 +39,7 @@ export class Dismisser extends Plumber {
     if (!this.visible) return;
 
     this.dispatch('dismiss');
-    await this.awaitCallback('onDismissed', { target: this.trigger });
+    await this.awaitCallback(this.onDismissed, { target: this.trigger });
     this.dispatch('dismissed');
   };
 

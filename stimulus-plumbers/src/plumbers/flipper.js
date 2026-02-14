@@ -51,7 +51,7 @@ export class Flipper extends Plumber {
       this.element.style[key] = value;
     }
 
-    await this.awaitCallback('onFlipped', { target: this.element, placement });
+    await this.awaitCallback(this.onFlipped, { target: this.element, placement });
     this.dispatch('flipped', { detail: { placement } });
   };
 

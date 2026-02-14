@@ -83,15 +83,13 @@ export default class Plumber {
     if (typeof name !== 'string') return;
 
     const context = this;
-    if (typeof context[name] === 'function') {
-      return context[name].bind(context.controller);
+    const controllerCallback = name.split('.').reduce((acc, key) => acc && acc[key], context.controller);
+    if (typeof controllerCallback === 'function') {
+      return controllerCallback.bind(context.controller);
     }
-
-    if (typeof context[name] === 'string') {
-      const callback = context[name].split('.').reduce((acc, key) => acc && acc[key], context.controller);
-      if (typeof callback === 'function') {
-        return callback.bind(context.controller);
-      }
+    const callback = name.split('.').reduce((acc, key) => acc && acc[key], context);
+    if (typeof callback === 'function') {
+      return callback.bind(context);
     }
   }
 

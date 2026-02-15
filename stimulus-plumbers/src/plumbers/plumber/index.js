@@ -7,6 +7,8 @@ const defaultOptions = {
   prefix: '',
 };
 
+export const visibilityConfig = { visibleOnly: true };
+
 export default class Plumber {
   /**
    * Creates a new Plumber instance.
@@ -23,7 +25,7 @@ export default class Plumber {
     const config = Object.assign({}, defaultOptions, options);
     const { element, visible, dispatch, prefix } = config;
     this.element = element || controller.element;
-    this.visibleOnly = !!visible;
+    this.visibleOnly = typeof visible === 'boolean' ? visible : visibilityConfig.visibleOnly;
     this.visibleCallback = typeof visible === 'string' ? visible : null;
     this.notify = !!dispatch;
     this.prefix = typeof prefix === 'string' && prefix ? prefix : controller.identifier;

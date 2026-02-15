@@ -5,6 +5,7 @@ const defaultOptions = {
   events: ['resize'],
   boundaries: ['top', 'left', 'right'],
   onShifted: 'shifted',
+  respectMotion: true,
 };
 
 export class Shifter extends Plumber {
@@ -15,14 +16,17 @@ export class Shifter extends Plumber {
    * @param {string[]} [options.events=['resize']] - Events triggering shift calculation
    * @param {string[]} [options.boundaries=['top','left','right']] - Boundaries to check (valid values: 'top', 'bottom', 'left', 'right')
    * @param {string} [options.onShifted='shifted'] - Callback name when shifted
+   * @param {boolean} [options.respectMotion=true] - Respect prefers-reduced-motion preference
    */
   constructor(controller, options = {}) {
     super(controller, options);
 
-    const { onShifted, events, boundaries } = Object.assign({}, defaultOptions, options);
+    const { onShifted, events, boundaries, respectMotion } = Object.assign({}, defaultOptions, options);
     this.onShifted = onShifted;
     this.events = events;
     this.boundaries = boundaries;
+    this.respectMotion = respectMotion;
+    this.prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
     this.enhance();
     this.observe();
@@ -39,6 +43,10 @@ export class Shifter extends Plumber {
     const overflow = this.overflowRect(this.element.getBoundingClientRect(), this.elementTranslations(this.element));
     const translateX = overflow['left'] || overflow['right'] || 0;
     const translateY = overflow['top'] || overflow['bottom'] || 0;
+
+    // Disable transitions for users who prefer reduced motion
+    this.element.style.transition = this.respectMotion && this.prefersReducedMotion ? 'none' : '';
+
     this.element.style.transform = `translate(${translateX}px, ${translateY}px)`;
 
     await this.awaitCallback(this.onShifted, overflow);

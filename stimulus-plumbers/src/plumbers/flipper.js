@@ -1,5 +1,6 @@
 import Plumber from './plumber';
 import { defineRect, viewportRect, directionMap } from './plumber/support';
+import { connectTriggerToTarget } from '../aria.js';
 
 const defaultOptions = {
   anchor: null,
@@ -7,6 +8,8 @@ const defaultOptions = {
   placement: 'bottom',
   alignment: 'start',
   onFlipped: 'flipped',
+  ariaRole: null,
+  respectMotion: true,
 };
 
 export class Flipper extends Plumber {
@@ -19,16 +22,33 @@ export class Flipper extends Plumber {
    * @param {string} [options.placement='bottom'] - Initial placement direction ('top', 'bottom', 'left', 'right')
    * @param {string} [options.alignment='start'] - Alignment ('start', 'center', 'end')
    * @param {string} [options.onFlipped='flipped'] - Callback name when flipped
+   * @param {string} [options.ariaRole=null] - ARIA role to set on element
+   * @param {boolean} [options.respectMotion=true] - Respect prefers-reduced-motion preference
    */
   constructor(controller, options = {}) {
     super(controller, options);
 
-    const { anchor, events, placement, alignment, onFlipped } = Object.assign({}, defaultOptions, options);
+    const { anchor, events, placement, alignment, onFlipped, ariaRole, respectMotion } = Object.assign(
+      {},
+      defaultOptions,
+      options
+    );
     this.anchor = anchor;
     this.events = events;
     this.placement = placement;
     this.alignment = alignment;
     this.onFlipped = onFlipped;
+    this.ariaRole = ariaRole;
+    this.respectMotion = respectMotion;
+    this.prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+    if (this.anchor && this.element) {
+      connectTriggerToTarget({
+        trigger: this.anchor,
+        target: this.element,
+        role: this.ariaRole,
+      });
+    }
 
     this.enhance();
     this.observe();
@@ -47,6 +67,10 @@ export class Flipper extends Plumber {
     if (positionStyle['position'] != 'absolute') this.element.style['position'] = 'absolute';
 
     const placement = this.flippedRect(this.anchor.getBoundingClientRect(), this.element.getBoundingClientRect());
+
+    // Disable transitions for users who prefer reduced motion
+    this.element.style.transition = this.respectMotion && this.prefersReducedMotion ? 'none' : '';
+
     for (const [key, value] of Object.entries(placement)) {
       this.element.style[key] = value;
     }

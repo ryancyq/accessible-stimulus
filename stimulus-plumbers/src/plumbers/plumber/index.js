@@ -7,6 +7,8 @@ const defaultOptions = {
   prefix: '',
 };
 
+export const visibilityConfig = { visibleOnly: true };
+
 export default class Plumber {
   /**
    * Creates a new Plumber instance.
@@ -23,7 +25,7 @@ export default class Plumber {
     const config = Object.assign({}, defaultOptions, options);
     const { element, visible, dispatch, prefix } = config;
     this.element = element || controller.element;
-    this.visibleOnly = !!visible;
+    this.visibleOnly = typeof visible === 'boolean' ? visible : visibilityConfig.visibleOnly;
     this.visibleCallback = typeof visible === 'string' ? visible : null;
     this.notify = !!dispatch;
     this.prefix = typeof prefix === 'string' && prefix ? prefix : controller.identifier;
@@ -83,15 +85,13 @@ export default class Plumber {
     if (typeof name !== 'string') return;
 
     const context = this;
-    if (typeof context[name] === 'function') {
-      return context[name].bind(context.controller);
+    const controllerCallback = name.split('.').reduce((acc, key) => acc && acc[key], context.controller);
+    if (typeof controllerCallback === 'function') {
+      return controllerCallback.bind(context.controller);
     }
-
-    if (typeof context[name] === 'string') {
-      const callback = context[name].split('.').reduce((acc, key) => acc && acc[key], context.controller);
-      if (typeof callback === 'function') {
-        return callback.bind(context.controller);
-      }
+    const callback = name.split('.').reduce((acc, key) => acc && acc[key], context);
+    if (typeof callback === 'function') {
+      return callback.bind(context);
     }
   }
 

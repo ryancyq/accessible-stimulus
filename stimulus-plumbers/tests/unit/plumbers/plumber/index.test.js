@@ -1,5 +1,5 @@
 import { describe, it, expect, beforeEach, vi } from 'vitest'
-import Plumber from '../../../src/plumbers/plumber'
+import Plumber from '../../../../src/plumbers/plumber'
 
 describe('Plumber', () => {
   let mockController
@@ -234,10 +234,6 @@ describe('Plumber', () => {
         method: vi.fn(),
       }
       const plumber = new Plumber(mockController)
-      // The implementation has a bug - it tries to split context[name] instead of name
-      // So we need to set context[name] to be the path string
-      plumber['nested.method'] = 'nested.method'
-
       const callback = plumber.findCallback('nested.method')
 
       expect(callback).toBeTypeOf('function')
@@ -250,8 +246,6 @@ describe('Plumber', () => {
       }
       mockController.myMethod = myMethod
       const plumber = new Plumber(mockController)
-      plumber.myMethod = myMethod
-
       const callback = plumber.findCallback('myMethod')
       callback()
 
@@ -273,7 +267,6 @@ describe('Plumber', () => {
       const mockFn = vi.fn(() => 'result')
       mockController.myMethod = mockFn
       const plumber = new Plumber(mockController)
-      plumber.myMethod = mockFn
 
       const result = await plumber.awaitCallback('myMethod', 'arg1', 'arg2')
 

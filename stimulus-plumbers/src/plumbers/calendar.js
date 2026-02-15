@@ -220,7 +220,7 @@ export class Calendar extends Plumber {
 
     this.current = to;
     this.build();
-    await this.awaitCallback('onNavigated', { from: fromIso, to: toIso });
+    await this.awaitCallback(this.onNavigated, { from: fromIso, to: toIso });
 
     this.dispatch('navigated', { detail: { from: fromIso, to: toIso } });
   };

@@ -101,6 +101,32 @@ describe('Flipper', () => {
 
       expect(mockController.flip).toBeTypeOf('function')
     })
+
+    it('initializes with respectMotion enabled by default', () => {
+      const flipper = new Flipper(mockController, { anchor })
+
+      expect(flipper.respectMotion).toBe(true)
+    })
+
+    it('accepts custom respectMotion option', () => {
+      const flipper = new Flipper(mockController, {
+        anchor,
+        respectMotion: false,
+      })
+
+      expect(flipper.respectMotion).toBe(false)
+    })
+
+    it('checks prefers-reduced-motion media query on initialization', () => {
+      const matchMediaSpy = vi.spyOn(window, 'matchMedia')
+      const flipper = new Flipper(mockController, { anchor })
+
+      expect(matchMediaSpy).toHaveBeenCalledWith('(prefers-reduced-motion: reduce)')
+      expect(flipper.prefersReducedMotion).toBeDefined()
+      expect(typeof flipper.prefersReducedMotion).toBe('boolean')
+
+      matchMediaSpy.mockRestore()
+    })
   })
 
   describe('biggerRectThan', () => {
@@ -283,6 +309,74 @@ describe('Flipper', () => {
       const reference = { x: 150, y: 0, width: 80, height: 100 }
 
       expect(() => flipper.quadrumAlignment(anchorRect, 'invalid', reference)).toThrow()
+    })
+  })
+
+  describe('flip', () => {
+    it('disables transitions when respectMotion is true and user prefers reduced motion', async () => {
+      // Mock prefers-reduced-motion: reduce
+      const originalMatchMedia = window.matchMedia
+      window.matchMedia = vi.fn().mockImplementation((query) => ({
+        matches: query === '(prefers-reduced-motion: reduce)',
+        media: query,
+        addEventListener: vi.fn(),
+        removeEventListener: vi.fn(),
+        addListener: vi.fn(),
+        removeListener: vi.fn(),
+        dispatchEvent: vi.fn(),
+      }))
+
+      const flipper = new Flipper(mockController, { anchor, respectMotion: true })
+
+      await flipper.flip()
+
+      expect(element.style.transition).toBe('none')
+
+      window.matchMedia = originalMatchMedia
+    })
+
+    it('does not disable transitions when respectMotion is false even if user prefers reduced motion', async () => {
+      // Mock prefers-reduced-motion: reduce
+      const originalMatchMedia = window.matchMedia
+      window.matchMedia = vi.fn().mockImplementation((query) => ({
+        matches: query === '(prefers-reduced-motion: reduce)',
+        media: query,
+        addEventListener: vi.fn(),
+        removeEventListener: vi.fn(),
+        addListener: vi.fn(),
+        removeListener: vi.fn(),
+        dispatchEvent: vi.fn(),
+      }))
+
+      const flipper = new Flipper(mockController, { anchor, respectMotion: false })
+
+      await flipper.flip()
+
+      expect(element.style.transition).toBe('')
+
+      window.matchMedia = originalMatchMedia
+    })
+
+    it('does not disable transitions when user does not prefer reduced motion', async () => {
+      // Mock prefers-reduced-motion: no-preference
+      const originalMatchMedia = window.matchMedia
+      window.matchMedia = vi.fn().mockImplementation((query) => ({
+        matches: false,
+        media: query,
+        addEventListener: vi.fn(),
+        removeEventListener: vi.fn(),
+        addListener: vi.fn(),
+        removeListener: vi.fn(),
+        dispatchEvent: vi.fn(),
+      }))
+
+      const flipper = new Flipper(mockController, { anchor, respectMotion: true })
+
+      await flipper.flip()
+
+      expect(element.style.transition).toBe('')
+
+      window.matchMedia = originalMatchMedia
     })
   })
 

@@ -1,6 +1,6 @@
 import { describe, it, expect, beforeEach, afterEach, vi } from 'vitest';
 import { Application } from '@hotwired/stimulus';
-import FlipperController from '../../../src/controllers/flipper_controller.js';
+import FlipperController from '../../../src/controllers/flipper_controller';
 
 describe('FlipperController', () => {
   let application;

@@ -1,7 +1,7 @@
 import { describe, it, expect, beforeEach, afterEach, vi } from 'vitest';
 import { Application } from '@hotwired/stimulus';
 import { visibilityConfig } from '../../../src/plumbers/plumber/support'  
-import ModalController from '../../../src/controllers/modal_controller.js';
+import ModalController from '../../../src/controllers/modal_controller';
 
 describe('ModalController', () => {
   let application;

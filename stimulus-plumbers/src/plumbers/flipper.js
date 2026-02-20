@@ -1,6 +1,6 @@
 import Plumber from './plumber';
 import { defineRect, viewportRect, directionMap } from './plumber/support';
-import { connectTriggerToTarget } from '../aria.js';
+import { connectTriggerToTarget } from '../aria';
 
 const defaultOptions = {
   anchor: null,

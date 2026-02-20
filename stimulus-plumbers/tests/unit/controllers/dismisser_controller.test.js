@@ -1,7 +1,7 @@
 import { describe, it, expect, beforeEach, afterEach, vi } from 'vitest';
 import { Application } from '@hotwired/stimulus';
 import { visibilityConfig } from '../../../src/plumbers/plumber/support'  
-import DismisserController from '../../../src/controllers/dismisser_controller.js';
+import DismisserController from '../../../src/controllers/dismisser_controller';
 
 describe('DismisserController', () => {
   let application;

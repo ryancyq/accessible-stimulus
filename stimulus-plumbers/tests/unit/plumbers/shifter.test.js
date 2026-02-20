@@ -67,6 +67,31 @@ describe('Shifter', () => {
       expect(shifter.onShifted).toBe('customShifted')
     })
 
+    it('initializes with respectMotion enabled by default', () => {
+      const shifter = new Shifter(mockController)
+
+      expect(shifter.respectMotion).toBe(true)
+    })
+
+    it('accepts custom respectMotion option', () => {
+      const shifter = new Shifter(mockController, {
+        respectMotion: false,
+      })
+
+      expect(shifter.respectMotion).toBe(false)
+    })
+
+    it('checks prefers-reduced-motion media query on initialization', () => {
+      const matchMediaSpy = vi.spyOn(window, 'matchMedia')
+      const shifter = new Shifter(mockController)
+
+      expect(matchMediaSpy).toHaveBeenCalledWith('(prefers-reduced-motion: reduce)')
+      expect(shifter.prefersReducedMotion).toBeDefined()
+      expect(typeof shifter.prefersReducedMotion).toBe('boolean')
+
+      matchMediaSpy.mockRestore()
+    })
+
     it('enhances controller with shift method', () => {
       const shifter = new Shifter(mockController)
 
@@ -306,6 +331,72 @@ describe('Shifter', () => {
 
       expect(onShifted).toHaveBeenCalled()
       expect(mockController.dispatch).toHaveBeenCalledWith('shifted', expect.any(Object))
+    })
+
+    it('disables transitions when respectMotion is true and user prefers reduced motion', async () => {
+      // Mock prefers-reduced-motion: reduce
+      const originalMatchMedia = window.matchMedia
+      window.matchMedia = vi.fn().mockImplementation((query) => ({
+        matches: query === '(prefers-reduced-motion: reduce)',
+        media: query,
+        addEventListener: vi.fn(),
+        removeEventListener: vi.fn(),
+        addListener: vi.fn(),
+        removeListener: vi.fn(),
+        dispatchEvent: vi.fn(),
+      }))
+
+      const shifter = new Shifter(mockController, { respectMotion: true })
+
+      await shifter.shift()
+
+      expect(element.style.transition).toBe('none')
+
+      window.matchMedia = originalMatchMedia
+    })
+
+    it('does not disable transitions when respectMotion is false even if user prefers reduced motion', async () => {
+      // Mock prefers-reduced-motion: reduce
+      const originalMatchMedia = window.matchMedia
+      window.matchMedia = vi.fn().mockImplementation((query) => ({
+        matches: query === '(prefers-reduced-motion: reduce)',
+        media: query,
+        addEventListener: vi.fn(),
+        removeEventListener: vi.fn(),
+        addListener: vi.fn(),
+        removeListener: vi.fn(),
+        dispatchEvent: vi.fn(),
+      }))
+
+      const shifter = new Shifter(mockController, { respectMotion: false })
+
+      await shifter.shift()
+
+      expect(element.style.transition).toBe('')
+
+      window.matchMedia = originalMatchMedia
+    })
+
+    it('does not disable transitions when user does not prefer reduced motion', async () => {
+      // Mock prefers-reduced-motion: no-preference
+      const originalMatchMedia = window.matchMedia
+      window.matchMedia = vi.fn().mockImplementation((query) => ({
+        matches: false,
+        media: query,
+        addEventListener: vi.fn(),
+        removeEventListener: vi.fn(),
+        addListener: vi.fn(),
+        removeListener: vi.fn(),
+        dispatchEvent: vi.fn(),
+      }))
+
+      const shifter = new Shifter(mockController, { respectMotion: true })
+
+      await shifter.shift()
+
+      expect(element.style.transition).toBe('')
+
+      window.matchMedia = originalMatchMedia
     })
   })
 

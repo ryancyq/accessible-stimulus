@@ -1,6 +1,8 @@
 import Plumber from './plumber';
 import { isValidDate, tryParseDate } from './plumber/support';
 
+const DAYS_OF_WEEK = 7;
+
 const defaultOptions = {
   locales: ['default'],
   today: '',
@@ -128,8 +130,9 @@ export class Calendar extends Plumber {
       const current = new Date(currentYear, currentMonth, i);
       daysOfMonth.push(parseDate(current));
     }
-    const remainder = 7 - (daysOfMonth.length % 7);
-    for (let i = 1; i <= remainder; i++) {
+    const mod = daysOfMonth.length % DAYS_OF_WEEK;
+    const trailing = mod === 0 ? 0 : DAYS_OF_WEEK - mod;
+    for (let i = 1; i <= trailing; i++) {
       const next = new Date(currentYear, currentMonth + 1, i);
       daysOfMonth.push(parseDate(next));
     }

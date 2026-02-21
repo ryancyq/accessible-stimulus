@@ -66,7 +66,7 @@ export class ContentLoader extends Plumber {
    * @param {string} params.url - URL to load from
    * @returns {Promise<boolean>} True if content should be loaded
    */
-  contentLoad = async ({ url }) => !!url;
+  contentLoadable = ({ url }) => !!url;
 
   /**
    * Loads content from remote or local source.
@@ -103,11 +103,12 @@ export class ContentLoader extends Plumber {
   load = async () => {
     if (this.loadedAt && !this.reloadable) return;
 
-    const loadable = await this.awaitCallback(this.onLoad, { url: this.url });
+    const loadableCallback = this.findCallback(this.onLoad);
+    const loadable = await this.awaitCallback(loadableCallback || this.contentLoadable, { url: this.url });
     this.dispatch('load', { detail: { url: this.url } });
     if (!loadable) return;
 
-    const content = await this.awaitCallback(this.onLoading, { url: this.url });
+    const content = this.url ? await this.remoteContentLoader(this.url) : await this.contentLoader();
     this.dispatch('loading', { detail: { url: this.url } });
     if (!content) return;
 

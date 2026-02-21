@@ -3,8 +3,8 @@ import {
   Visibility,
   attachVisibility,
   toggleVisibility,
-  visibilityConfig,
 } from '../../../src/plumbers/visibility'
+import { visibilityConfig } from '../../../src/plumbers/plumber/support'
 
 describe('Visibility', () => {
   let mockController

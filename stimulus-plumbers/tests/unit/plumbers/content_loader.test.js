@@ -1,5 +1,5 @@
 import { describe, it, expect, beforeEach, afterEach, vi } from 'vitest'
-import { ContentLoader, attachContentLoader } from '../../../src/plumbers/content-loader'
+import { ContentLoader, attachContentLoader } from '../../../src/plumbers/content_loader'
 
 describe('ContentLoader', () => {
   let mockController
@@ -97,7 +97,7 @@ describe('ContentLoader', () => {
         url: '/api/content',
       })
 
-      expect(await loader.contentLoad({ url: '/api/content' })).toBe(true)
+      expect(await loader.contentLoadable({ url: '/api/content' })).toBe(true)
     })
 
     it('returns false when url is empty', async () => {
@@ -105,7 +105,7 @@ describe('ContentLoader', () => {
         url: '',
       })
 
-      expect(await loader.contentLoad({ url: '' })).toBe(false)
+      expect(await loader.contentLoadable({ url: '' })).toBe(false)
     })
 
     it('can be overridden for custom loading conditions', async () => {
@@ -266,16 +266,16 @@ describe('ContentLoader', () => {
       expect(contentLoad).toHaveBeenCalledWith({ url: '/api/content' })
     })
 
-    it('calls contentLoading to fetch content', async () => {
-      const contentLoading = vi.fn(async () => '<p>Custom content</p>')
+    it('calls remoteContentLoader to fetch content from url', async () => {
+      const remoteContentLoader = vi.fn(async () => '<p>Custom content</p>')
       const loader = new ContentLoader(mockController, {
         url: '/api/content',
       })
-      loader.contentLoading = contentLoading
+      loader.remoteContentLoader = remoteContentLoader
 
       await loader.load()
 
-      expect(contentLoading).toHaveBeenCalledWith({ url: '/api/content' })
+      expect(remoteContentLoader).toHaveBeenCalledWith('/api/content')
     })
 
     it('dispatches loaded event with content after fetching', async () => {

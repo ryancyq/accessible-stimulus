@@ -1,14 +1,17 @@
 import { describe, it, expect, beforeEach, afterEach, vi } from 'vitest';
 import { Application } from '@hotwired/stimulus';
+import { visibilityConfig } from '../../../src/plumbers/plumber/support'  
 import ModalController from '../../../src/controllers/modal_controller.js';
 
 describe('ModalController', () => {
   let application;
+  let isVisibleOnlySpy;
   let consoleErrorSpy;
 
   beforeEach(() => {
     application = Application.start();
     application.register('modal', ModalController);
+    isVisibleOnlySpy = vi.spyOn(visibilityConfig, 'visibleOnly', 'get').mockReturnValue(false);
     consoleErrorSpy = vi.spyOn(console, 'error').mockImplementation(() => {});
   });
 
@@ -17,6 +20,7 @@ describe('ModalController', () => {
     document.body.innerHTML = '';
     document.body.style.overflow = '';
     consoleErrorSpy.mockRestore();
+    isVisibleOnlySpy.mockRestore();
   });
 
   describe('guardrails', () => {

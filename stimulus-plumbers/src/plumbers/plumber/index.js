@@ -1,13 +1,11 @@
-import { isWithinViewport } from './support';
+import { isWithinViewport, visibilityConfig } from './support';
 
 const defaultOptions = {
   element: null,
-  visible: true,
+  visible: null,
   dispatch: true,
   prefix: '',
 };
-
-export const visibilityConfig = { visibleOnly: true };
 
 export default class Plumber {
   /**

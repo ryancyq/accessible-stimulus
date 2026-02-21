@@ -1,3 +1,29 @@
+export const visibilityConfig = {
+  get visibleOnly() {
+    return true;
+  },
+  hiddenClass: null,
+};
+
+/**
+ * Maps each direction to its opposite direction.
+ * Used for flipping and boundary calculations.
+ */
+export const directionMap = {
+  get top() {
+    return 'bottom';
+  },
+  get bottom() {
+    return 'top';
+  },
+  get left() {
+    return 'right';
+  },
+  get right() {
+    return 'left';
+  },
+};
+
 /**
  * Creates a rect object with position and dimension properties.
  * @param {Object} params - Rectangle parameters
@@ -19,18 +45,6 @@ export function defineRect({ x, y, width, height }) {
     bottom: y + height,
   };
 }
-
-/**
- * Maps each direction to its opposite direction.
- * Used for flipping and boundary calculations.
- * @type {Object.<string, string>}
- */
-export const directionMap = {
-  top: 'bottom',
-  bottom: 'top',
-  left: 'right',
-  right: 'left',
-};
 
 /**
  * Returns the current viewport dimensions as a rect object.

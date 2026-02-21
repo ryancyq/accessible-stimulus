@@ -1,4 +1,5 @@
 import Plumber from './plumber';
+import { visibilityConfig } from './plumber/support';
 
 const defaultOptions = {
   visibility: 'visibility',
@@ -6,18 +7,16 @@ const defaultOptions = {
   onHidden: 'hidden',
 };
 
-export const visibilityConfig = { hiddenClass: 'hidden' };
-
 /**
  * Toggles element visibility using class or hidden attribute.
  * @param {HTMLElement} target - Element to toggle
  * @param {boolean} visible - True to show, false to hide
  * @param {string|null} [hiddenClass] - CSS class for hiding (defaults to config)
  */
-export function toggleVisibility(target, visible, hiddenClass = '') {
+export function toggleVisibility(target, visible, hiddenClass) {
   if (!(target instanceof HTMLElement)) return;
 
-  hiddenClass = hiddenClass ? hiddenClass : visibilityConfig.hiddenClass;
+  hiddenClass = typeof hiddenClass === 'string' ? hiddenClass : visibilityConfig.hiddenClass;
   if (hiddenClass) {
     if (visible) target.classList.remove(hiddenClass);
     else target.classList.add(hiddenClass);

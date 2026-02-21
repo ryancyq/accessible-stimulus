@@ -1,9 +1,5 @@
 # Stimulus Plumbers
 
-## Project Overview
-
-**@stimulus-plumbers/controllers** is a library of accessible Stimulus controllers that follow WCAG 2.1+ standards. This package provides semantically correct, keyboard-navigable UI components built on the Hotwire Stimulus framework.
-
 ## Folder Structure
 
 ```
@@ -26,12 +22,12 @@ stimulus-plumbers/
 │   │   │   └── *.test.js
 │   │   └── plumbers/
 │   │       ├── plumber/
-│   │       │   ├── *.test.js
+│   │       │   └── *.test.js
 │   │       └── *.test.js
 │   └── setup.js
+├── eslint.config.js
 ├── package.json
 ├── vite.config.js
-├── .eslintrc.json
 ├── .prettierrc.json
 ├── .gitignore
 └── README.md

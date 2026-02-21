@@ -16,7 +16,7 @@
     "test": "vitest run",
     "test:ui": "vitest --ui",
     "test:coverage": "vitest --coverage",
-    "lint": "eslint src --ext .js",
+    "lint": "eslint src",
     "format:write": "prettier --write \"src/**/*.js\"",
     "format:check": "prettier --check \"src/**/*.js\""
   },
@@ -38,12 +38,14 @@
     "@hotwired/stimulus": "^3.0.0 || ^2.0.0"
   },
   "devDependencies": {
+    "@eslint/js": "^10.0.1",
     "@hotwired/stimulus": "^3.2.2",
     "@testing-library/dom": "^10.4.0",
     "@vitest/coverage-v8": "^4.0.18",
     "@vitest/ui": "^4.0.18",
     "axe-core": "^4.10.2",
-    "eslint": "^8.57.1",
+    "eslint": "^10.0.1",
+    "globals": "^17.3.0",
     "jsdom": "^28.1.0",
     "prettier": "^3.3.3",
     "vite": "^7.3.1",

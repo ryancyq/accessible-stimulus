@@ -42,7 +42,7 @@ export class RovingTabIndex {
   }
 
   handleKeyDown(event) {
-    let newIndex = this.currentIndex;
+    let newIndex;
 
     switch (event.key) {
       case 'ArrowDown':

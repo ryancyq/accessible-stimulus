@@ -32,26 +32,20 @@ module StimulusPlumbers
         end
 
         def controllers
-          @controllers ||= registered_controllers.each_with_object({}) do |(controller, attrs), result|
-            result[controller] = true if attrs[:controller]
-          end.keys
+          @controllers ||= registered_controllers.filter_map { |controller, attrs| controller if attrs[:controller] }
         end
 
         def target(name, controller: nil)
-          controller_registered_or_default(controller).tap do |attrs|
-            raise ArgumentError, "controller name is required" if attrs.nil?
+          attrs = controller_registered_or_default(controller)
+          raise ArgumentError, "controller name is required" if attrs.nil?
 
-            attrs[:targets] ||= []
-            attrs[:targets].tap do |targets|
-              targets << name unless targets.include?(name)
-            end
-          end
+          attrs[:targets] ||= []
+          attrs[:targets] << name unless attrs[:targets].include?(name)
         end
 
         def targets
-          @targets ||= registered_controllers.each_with_object({}) do |(controller, attrs), targets|
-            attrs[:targets]&.each { targets[:"#{controller}-target"] = _1 }
-            targets
+          @targets ||= registered_controllers.each_with_object({}) do |(controller, attrs), result|
+            attrs[:targets]&.each { result[:"#{controller}-target"] = _1 }
           end
         end
 
@@ -74,42 +68,37 @@ module StimulusPlumbers
         end
 
         def class_name(name, css, controller: nil)
-          controller_registered_or_default(controller).tap do |attrs|
-            raise ArgumentError, "controller name is required" if attrs.nil?
+          attrs = controller_registered_or_default(controller)
+          raise ArgumentError, "controller name is required" if attrs.nil?
 
-            attrs[:class_names][name] ||= []
-            attrs[:class_names][name].tap do |class_names|
-              class_names << css unless class_names.include?(css)
-            end
-          end
+          attrs[:class_names] ||= {}
+          attrs[:class_names][name] ||= []
+          attrs[:class_names][name] << css unless attrs[:class_names][name].include?(css)
         end
 
         def class_names
-          @class_names ||= registered_controllers.each_with_object({}) do |(controller, attrs), class_names|
+          @class_names ||= registered_controllers.each_with_object({}) do |(controller, attrs), result|
             attrs[:class_names]&.each do |name, css|
               class_identifier = [controller, name.underscore.dasherize, "class"].join("-")
-              class_names[class_identifier.to_sym] = css.compact.map { _1.to_s.strip }.join(" ")
+              result[class_identifier.to_sym] = css.compact.map { _1.to_s.strip }.join(" ")
             end
-            class_names
           end
         end
 
         def value(name, value, controller: nil)
-          controller_registered_or_default(controller).tap do |attrs|
-            raise ArgumentError, "controller name is required" if attrs.nil?
+          attrs = controller_registered_or_default(controller)
+          raise ArgumentError, "controller name is required" if attrs.nil?
 
-            attrs[:values] ||= {}
-            attrs[:values][name] = value.is_a?(Array) || value.is_a?(Hash) ? JSON.generate(value) : value.to_s
-          end
+          attrs[:values] ||= {}
+          attrs[:values][name] = value.is_a?(Array) || value.is_a?(Hash) ? JSON.generate(value) : value.to_s
         end
 
         def values
-          @values ||= registered_controllers.each_with_object({}) do |(controller, attrs), values|
+          @values ||= registered_controllers.each_with_object({}) do |(controller, attrs), result|
             attrs[:values]&.each do |name, value|
               value_identifier = [controller, name.underscore.dasherize, "value"].join("-")
-              values[value_identifier.to_sym] = value
+              result[value_identifier.to_sym] = value
             end
-            values
           end
         end
 
@@ -152,7 +141,6 @@ module StimulusPlumbers
         def controller_registered_or_default(controller_name)
           if controller_name.present?
             registered_controllers[controller_name] ||= {}
-            registered_controllers[controller_name]
           elsif registered_controllers.size == 1
             registered_controllers[registered_controllers.keys.first]
           end
@@ -161,7 +149,7 @@ module StimulusPlumbers
         def extract_attribute(attr_name, attrs)
           return unless attrs.key?(attr_name)
 
-          yield attrs.delete(:attr_name)
+          yield attrs.delete(attr_name)
         end
       end
     end

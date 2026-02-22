@@ -8,11 +8,11 @@ module StimulusPlumbers
       module Views
         extend ActiveSupport::Concern
 
-        COMPONENTS = Dir.glob(File.join("*_component.rb"), base: __dir__).each_with_object({}) do |path, res|
+        COMPONENTS = Dir.glob(File.join("*_component.rb"), base: __dir__).each_with_object({}) do |path, result|
           component_path = path.chomp("_component.rb")
           component_name = component_path.gsub(File::Separator, "_")
           component_klazz = component_path.classify
-          res.tap { res[component_name.to_sym] = component_klazz }
+          result.tap { result[component_name.to_sym] = component_klazz }
         end
 
         included do

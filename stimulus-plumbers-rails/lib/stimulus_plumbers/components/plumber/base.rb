@@ -29,6 +29,10 @@ module StimulusPlumbers
           component_attrs[:data].merge!(stimulus.data)
         end
 
+        def theme
+          StimulusPlumbers.config.theme
+        end
+
         def stimulus
           @stimulus ||= Class.new.tap do |klazz|
             klazz.include StimulusPlumbers::Components::Plumber::StimulusRegistry

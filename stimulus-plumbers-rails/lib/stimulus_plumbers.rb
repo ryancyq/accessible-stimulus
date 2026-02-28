@@ -5,7 +5,19 @@ require "active_support"
 require "active_support/core_ext/string"
 require "view_component"
 
+require_relative "stimulus_plumbers/configuration"
+require_relative "stimulus_plumbers/logger"
+
 module StimulusPlumbers
+  class << self
+    def configure
+      yield config
+    end
+
+    def config
+      @config ||= Configuration.new
+    end
+  end
 end
 
 require "stimulus_plumbers/engine" if defined?(Rails::Engine)

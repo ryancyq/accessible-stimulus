@@ -18,7 +18,8 @@ module StimulusPlumbers
           direction: { default: :row,  range: DIR_RANGE }
         }.freeze,
         avatar:           {
-          size: { default: :md, range: SIZE_RANGE }
+          size:  { default: :md,  range: SIZE_RANGE },
+          color: { default: nil,  range: :avatar_color_range }
         }.freeze,
         action_list_item: {
           active: { default: false, range: BOOL_RANGE }
@@ -27,86 +28,66 @@ module StimulusPlumbers
           today:    { default: false, range: BOOL_RANGE },
           selected: { default: false, range: BOOL_RANGE },
           outside:  { default: false, range: BOOL_RANGE }
-        }.freeze
+        }.freeze,
+        card:             {}.freeze,
+        card_section:     {}.freeze,
+        action_list:      {}.freeze,
+        divider:          {}.freeze,
+        popover:          {}.freeze
       }.freeze
+
+      def attribute_names(component)
+        ARG_SCHEMA.fetch(component, {}).keys
+      end
 
       # Resolves presentational classes for a component slot.
       # Returns a Hash with :classes (String) and optionally :style (String).
       # Returns {} when no mapping exists for the given component.
       def resolve(component, **args)
         method_name = :"#{component}_classes"
-        return {} unless respond_to?(method_name, true)
+        unless respond_to?(method_name, true)
+          StimulusPlumbers::Logger.warn("#{self.class} has no classes method for component #{component.inspect}")
+          return {}
+        end
 
         send(method_name, **validate_args(component.to_sym, args))
+      end
+
+      def avatar_colors
+        {}
+      end
+
+      def avatar_color_range
+        avatar_colors.values
       end
 
       private
 
       def validate_args(component, args)
-        schema = ARG_SCHEMA[component]
-        return args unless schema
-
-        args.each_with_object({}) do |(key, value), result|
+        schema = ARG_SCHEMA.fetch(component, {})
+        args.slice(*schema.keys).each_with_object({}) do |(key, value), result|
           result[key] = coerce_arg(component, key, value, schema[key])
         end
       end
 
       def coerce_arg(component, key, value, schema)
         return value unless schema
-        return value if schema[:range].include?(value)
 
-        log_invalid_arg(component, key, value, schema)
+        range = schema[:range].is_a?(Symbol) ? send(schema[:range]) : schema[:range]
+        return value if range.empty? || range.include?(value)
+
+        StimulusPlumbers::Logger.warn(
+          "#{component}##{key} received unknown value #{value.inspect}. " \
+          "Range: #{schema[:range].inspect}. Falling back to: #{schema[:default].inspect}"
+        )
         schema[:default]
       end
 
-      def log_invalid_arg(component, key, value, schema)
-        message = "[StimulusPlumbers] #{component}##{key} received unknown value #{value.inspect}. " \
-                  "Range: #{schema[:range].inspect}. Falling back to: #{schema[:default].inspect}"
-        if defined?(Rails) && Rails.respond_to?(:logger) && Rails.logger
-          Rails.logger.warn(message)
-        else
-          warn(message)
+      ARG_SCHEMA.each_key do |component|
+        method_name = :"#{component}_classes"
+        define_method(method_name) do |**|
+          raise NotImplementedError, "#{self.class}##{method_name} is not implemented"
         end
-      end
-
-      def button_classes(_variant: :primary, _size: :md)
-        {}
-      end
-
-      def button_group_classes(_alignment: :left, _direction: :row)
-        {}
-      end
-
-      def card_classes
-        {}
-      end
-
-      def card_section_classes
-        {}
-      end
-
-      def avatar_classes(_size: :md)
-        {}
-      end
-
-      def action_list_classes
-        {}
-      end
-
-      def action_list_item_classes(_active: false)
-        {}
-      end
-
-      def divider_classes
-        {}
-      end
-
-      def popover_classes
-        {}
-      end
-
-      def calendar_day_classes(_today: false, _selected: false, _outside: false)
-        {}
       end
     end
   end

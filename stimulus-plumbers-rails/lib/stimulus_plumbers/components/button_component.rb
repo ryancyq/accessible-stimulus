@@ -7,8 +7,8 @@ class ButtonComponent < StimulusPlumbers::Components::Plumber::Base
   attr_reader :url, :external
 
   def initialize(url: nil, external: false, **kwargs)
-    super(**kwargs)
     @url = url
     @external = external
+    super(**kwargs)
   end
 end

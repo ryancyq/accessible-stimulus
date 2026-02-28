@@ -1,16 +1,4 @@
-<% colors = [
-  "text-white bg-amber-700",
-  "text-white bg-lime-700",
-  "text-white bg-sky-700",
-  "text-white bg-cyan-700",
-  "text-white bg-teal-700",
-  "text-white bg-emerald-700",
-  "text-white bg-indigo-700",
-  "text-white bg-fuchsia-700",
-  "text-white bg-rose-700",
-  "text-white bg-pink-700",
-  ] %>
-<%= render ContainerComponent.new classes: ["size-8", "#{color_attrs(colors)}": !url && !content?], tag: :span, **component_attrs, role: "img" do %>
+<%= render ContainerComponent.new classes: ["#{color_class}": !url && !content?], tag: :span, **component_attrs, role: "img" do %>
   <% if content? %>
     <%= content %>
   <% elsif url %>

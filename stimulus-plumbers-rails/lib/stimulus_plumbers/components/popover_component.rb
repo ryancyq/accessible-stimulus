@@ -7,8 +7,8 @@ class PopoverComponent < StimulusPlumbers::Components::Plumber::Base
   attr_reader :interactive, :scrollable
 
   def initialize(interactive: true, scrollable: false, **kwargs)
-    super(**kwargs)
     @interactive = interactive
     @scrollable = scrollable
+    super(**kwargs)
   end
 end

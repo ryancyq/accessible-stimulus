@@ -53,6 +53,21 @@ module StimulusPlumbers
         }.freeze
       }.freeze
 
+      AVATAR_COLORS = {
+        amber: "text-white bg-amber-600",
+        lime: "text-white bg-lime-600",
+        sky: "text-white bg-sky-600",
+        cyan: "text-white bg-cyan-600",
+        teal: "text-white bg-teal-600",
+        emerald: "text-white bg-emerald-600",
+        indigo: "text-white bg-indigo-600",
+        fuchsia:"text-white bg-fuchsia-600",
+        rose: "text-white bg-rose-600",
+        pink: "text-white bg-pink-600",
+        violet: "text-white bg-violet-600",
+        blue: "text-white bg-blue-600"
+      }.freeze
+
       AVATAR_SIZE_KLASSES = {
         sm: "size-[--sp-icon-size]",
         md: "size-[--sp-avatar-size]",
@@ -66,6 +81,10 @@ module StimulusPlumbers
         text-[--sp-color-primary-fg]
         hover:bg-[--sp-color-primary]/90
       ].freeze
+
+      def avatar_colors
+        AVATAR_COLORS
+      end
 
       private
 
@@ -116,17 +135,16 @@ module StimulusPlumbers
         { classes: klasses("p-[--sp-space-6]") }
       end
 
-      def avatar_classes(size: :md)
+      def avatar_classes(size: :md, color: nil)
         {
           classes: klasses(
             AVATAR_SIZE_KLASSES.fetch(size, AVATAR_SIZE_KLASSES[:md]),
+            AVATAR_COLORS.fetch(color, nil),
             "rounded-[--sp-radius-full]",
             "overflow-hidden",
             "inline-flex",
             "items-center",
             "justify-center",
-            "bg-[--sp-color-muted]",
-            "text-[--sp-color-muted-fg]"
           )
         }
       end

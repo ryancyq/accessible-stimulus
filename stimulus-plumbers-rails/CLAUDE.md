@@ -45,3 +45,4 @@ bundle exec rspec
 ## Guidelines
 - **Unit tests** using Rspec
 - **Lint tests** using Rubocop
+- **Always Run Linting** after appraisal command

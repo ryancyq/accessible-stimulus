@@ -1,6 +1,6 @@
 plugins:
   - rubocop-rake
-  - rubocop-rspec
+  - rubocop-minitest
 
 AllCops:
   TargetRubyVersion: 2.7
@@ -52,6 +52,7 @@ Style/Documentation:
 Metrics/ClassLength:
   Exclude:
     - lib/stimulus_plumbers/themes/**/*.rb
+    - test/**/*_test.rb
 
 Metrics/ModuleLength:
   Exclude:
@@ -64,9 +65,7 @@ Style/DocumentDynamicEvalDefinition:
 Metrics/MethodLength:
   Exclude:
     - lib/stimulus_plumbers/themes/**/*.rb
+    - test/**/*_test.rb
 
-RSpec/ExampleLength:
-  Enabled: false
-
-RSpec/MultipleExpectations:
+Minitest/MultipleAssertions:
   Enabled: false

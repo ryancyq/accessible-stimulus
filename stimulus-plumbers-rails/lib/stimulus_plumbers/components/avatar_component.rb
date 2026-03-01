@@ -14,15 +14,19 @@ class AvatarComponent < StimulusPlumbers::Components::Plumber::Base
   end
 
   def color_class
-    klass = theme.avatar_colors.fetch(@color) if @color
-    
-    if !klass && (name || initials)
-      i = (name || initials).bytes.reduce(0) { |hash, byte| hash ^ byte }
-      klass = theme.avatar_color_range[i % theme.avatar_color_range.length]
-    end
+    color_class_by_arg || color_class_by_name || theme.avatar_color_range.first
+  end
 
-    return klass if klass
+  private
 
-    theme.avatar_color_range.first
+  def color_class_by_arg
+    theme.avatar_colors.fetch(@color) if @color
+  end
+
+  def color_class_by_name
+    seed = name || initials
+    return unless seed
+
+    theme.avatar_color_range[seed.bytes.reduce(:^) % theme.avatar_color_range.length]
   end
 end

@@ -9,26 +9,9 @@ module StimulusPlumbers
         extend ActiveSupport::Concern
 
         def extract(attrs)
-          extract_attribute(:controller, attrs) do |controller|
-            collection = controller.is_a?(Enumerable) ? controller : controller.to_s.split
-            collection.each { controller(_1) }
-          end
-
-          extract_attribute(:action, attrs) do |action|
-            collection = action.is_a?(Enumerable) ? action : action.to_s.split
-            collection.each { action(_1) }
-          end
-
-          attrs.each_pair do |key, value|
-            matched = STIMULUS_ATTR_REGEX.match(key)
-            next unless matched && STIMULUS_ATTR_SUFFIXES.include?(matched[:suffix])
-
-            case matched[:suffix]
-            when "target" then target(key, value)
-            when "class" then class_name(key, value)
-            when "value" then value(key, value)
-            end
-          end
+          extract_stimulus_controllers!(attrs)
+          extract_stimulus_actions!(attrs)
+          extract_stimulus_attrs!(attrs)
         end
 
         def data
@@ -134,6 +117,33 @@ module StimulusPlumbers
         STIMULUS_ATTR_SUFFIXES = %w[target class value].freeze
 
         private
+
+        def extract_stimulus_controllers!(attrs)
+          extract_attribute(:controller, attrs) do |controller|
+            collection = controller.is_a?(Enumerable) ? controller : controller.to_s.split
+            collection.each { controller(_1) }
+          end
+        end
+
+        def extract_stimulus_actions!(attrs)
+          extract_attribute(:action, attrs) do |action|
+            collection = action.is_a?(Enumerable) ? action : action.to_s.split
+            collection.each { action(_1) }
+          end
+        end
+
+        def extract_stimulus_attrs!(attrs)
+          attrs.each_pair do |key, value|
+            matched = STIMULUS_ATTR_REGEX.match(key)
+            next unless matched && STIMULUS_ATTR_SUFFIXES.include?(matched[:suffix])
+
+            case matched[:suffix]
+            when "target" then target(key, value)
+            when "class" then class_name(key, value)
+            when "value" then value(key, value)
+            end
+          end
+        end
 
         def registered_controllers
           @registered_controllers ||= {}

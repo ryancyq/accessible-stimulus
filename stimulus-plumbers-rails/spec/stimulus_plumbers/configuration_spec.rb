@@ -11,7 +11,10 @@ RSpec.describe StimulusPlumbers::Configuration do
     end
 
     it "is memoized" do
-      expect(config.theme).to be(config.theme)
+      first_call = config.theme
+      second_call = config.theme
+
+      expect(first_call).to be(second_call)
     end
   end
 
@@ -29,7 +32,7 @@ RSpec.describe StimulusPlumbers::Configuration do
 
     it "raises ArgumentError for an unknown symbol" do
       expect { config.theme = :unknown }
-        .to raise_error(ArgumentError, /Unknown theme/)
+        .to raise_error(ArgumentError, %r{Unknown theme})
     end
   end
 
@@ -39,7 +42,10 @@ RSpec.describe StimulusPlumbers::Configuration do
     end
 
     it "is memoized" do
-      expect(config.log_formatter).to be(config.log_formatter)
+      first_call = config.log_formatter
+      second_call = config.log_formatter
+
+      expect(first_call).to be(second_call)
     end
   end
 
@@ -50,18 +56,18 @@ RSpec.describe StimulusPlumbers::Configuration do
     end
 
     it "accepts a proc" do
-      config.log_formatter = proc { |msg| msg.upcase }
+      config.log_formatter = proc(&:upcase)
       expect(config.log_formatter.call("test")).to eq("TEST")
     end
 
     it "raises ArgumentError when given a non-callable" do
       expect { config.log_formatter = "a string" }
-        .to raise_error(ArgumentError, /respond to #call/)
+        .to raise_error(ArgumentError, %r{respond to #call})
     end
 
     it "raises ArgumentError when given nil" do
       expect { config.log_formatter = nil }
-        .to raise_error(ArgumentError, /respond to #call/)
+        .to raise_error(ArgumentError, %r{respond to #call})
     end
   end
 end

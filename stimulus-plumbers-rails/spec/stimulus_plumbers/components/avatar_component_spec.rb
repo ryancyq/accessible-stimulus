@@ -63,7 +63,10 @@ RSpec.describe AvatarComponent, type: :component do
     it "consistently returns same color for same name" do
       component = described_class.new(name: "John Doe")
 
-      expect(component.color_class).to eq(component.color_class)
+      first_result = component.color_class
+      second_result = component.color_class
+
+      expect(first_result).to eq(second_result)
     end
 
     it "returns a color from the theme color range for a given name" do

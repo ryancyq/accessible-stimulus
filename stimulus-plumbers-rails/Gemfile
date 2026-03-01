@@ -19,8 +19,6 @@ group :development do
   gem "rubocop", "~> 1.79", require: false
   gem "rubocop-rake", require: false
   gem "rubocop-minitest", require: false
-  gem "rubocop-accessibility", require: false
-
   gem "appraisal", "~> 2.5.0", require: false
 end
 
@@ -28,5 +26,5 @@ group :test do
   gem "minitest", "~> 5.25"
   gem "capybara", "~> 3.39" # last version to support Ruby 2.7
   gem "cuprite"
-  gem "axe-core-capybara"
+  gem "puma"
 end

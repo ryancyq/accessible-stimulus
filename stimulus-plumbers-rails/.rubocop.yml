@@ -1,6 +1,7 @@
 plugins:
   - rubocop-rake
   - rubocop-minitest
+  - rubocop-accessibility
 
 AllCops:
   TargetRubyVersion: 2.7
@@ -69,3 +70,12 @@ Metrics/MethodLength:
 
 Minitest/MultipleAssertions:
   Enabled: false
+
+Accessibility/AltText:
+  Enabled: true
+
+Accessibility/ButtonName:
+  Enabled: true
+
+Accessibility/LinkText:
+  Enabled: true

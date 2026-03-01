@@ -3,22 +3,30 @@
 class AvatarComponent < StimulusPlumbers::Components::Plumber::Base
   attr_reader :name, :initials, :url
 
-  def initialize(name: nil, initials: nil, url: nil, **kwargs)
-    unless name.nil?
-      kwargs[:aria] ||= {}
-      kwargs[:aria][:label] = name
-    end
-
-    super(**kwargs)
+  def initialize(name: nil, initials: nil, url: nil, color: nil, **kwargs)
     @name = name
     @initials = initials
     @url = url
+    @color = color
+    kwargs[:aria] ||= {}
+    kwargs[:aria][:label] = name unless name.nil?
+    super(color: color, **kwargs)
   end
 
-  def color_attrs(colors)
-    return colors.first unless name || initials
+  def color_class
+    color_class_by_arg || color_class_by_name || theme.avatar_color_range.first
+  end
 
-    i = (name || initials).bytes.reduce(0) { |hash, byte| hash ^ byte }
-    colors[i % colors.length]
+  private
+
+  def color_class_by_arg
+    theme.avatar_colors.fetch(@color) if @color
+  end
+
+  def color_class_by_name
+    seed = name || initials
+    return unless seed
+
+    theme.avatar_color_range[seed.bytes.reduce(:^) % theme.avatar_color_range.length]
   end
 end

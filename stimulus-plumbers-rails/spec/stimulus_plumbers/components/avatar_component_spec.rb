@@ -53,40 +53,46 @@ RSpec.describe AvatarComponent, type: :component do
     end
   end
 
-  describe "#color_attrs" do
-    it "returns first color when no name or initials" do
+  describe "#color_class" do
+    it "returns first color in the range when no name or initials" do
       component = described_class.new
-      colors = %w[red blue green]
 
-      expect(component.color_attrs(colors)).to eq("red")
+      expect(component.color_class).to eq(component.theme.avatar_color_range.first)
     end
 
     it "consistently returns same color for same name" do
       component = described_class.new(name: "John Doe")
-      colors = %w[red blue green yellow]
 
-      color1 = component.color_attrs(colors)
-      color2 = component.color_attrs(colors)
+      first_result = component.color_class
+      second_result = component.color_class
 
-      expect(color1).to eq(color2)
+      expect(first_result).to eq(second_result)
     end
 
-    it "returns color based on name hash" do
+    it "returns a color from the theme color range for a given name" do
       component = described_class.new(name: "Test")
-      colors = %w[red blue green]
 
-      result = component.color_attrs(colors)
-
-      expect(colors).to include(result)
+      expect(component.theme.avatar_color_range).to include(component.color_class)
     end
 
-    it "returns color based on initials when name is nil" do
+    it "returns a color from the theme color range based on initials when name is nil" do
       component = described_class.new(initials: "AB")
-      colors = %w[red blue green]
 
-      result = component.color_attrs(colors)
+      expect(component.theme.avatar_color_range).to include(component.color_class)
+    end
 
-      expect(colors).to include(result)
+    it "returns the resolved css class for an explicit color key" do
+      component = described_class.new(name: "John", color: :indigo)
+
+      expect(component.color_class).to eq(component.theme.avatar_colors.fetch(:indigo))
+    end
+
+    it "uses explicit color over computed color from name" do
+      auto_component    = described_class.new(name: "John")
+      colored_component = described_class.new(name: "John", color: :rose)
+
+      expect(colored_component.color_class).not_to eq(auto_component.color_class)
+      expect(colored_component.color_class).to eq(colored_component.theme.avatar_colors.fetch(:rose))
     end
   end
 end

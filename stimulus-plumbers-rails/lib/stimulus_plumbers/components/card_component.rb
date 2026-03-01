@@ -13,10 +13,10 @@ class CardComponent < StimulusPlumbers::Components::Plumber::Base
   alias_method :divided?, :divided
 
   def initialize(title: nil, divided: false, actions_alignment: :right, **kwargs)
-    super(**kwargs)
     @title = title
     @divided = divided
     @actions_alignment = actions_alignment.to_sym == :right ? :right : :left
+    super(**kwargs)
   end
 
   def default_divider

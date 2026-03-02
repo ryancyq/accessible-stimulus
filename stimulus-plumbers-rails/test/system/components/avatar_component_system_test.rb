@@ -7,11 +7,13 @@ class AvatarComponentSystemTest < ApplicationSystemTestCase
 
   def test_with_name_passes_wcag
     visit "#{BASE}/with_name"
+
     assert_accessible
   end
 
   def test_with_image_passes_wcag
     visit "#{BASE}/with_image"
+
     assert_accessible
   end
 end

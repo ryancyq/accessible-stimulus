@@ -13,9 +13,9 @@ Capybara.register_driver(:cuprite) do |app|
   headless = ENV["HEADLESS"] != "false"
   Capybara::Cuprite::Driver.new(
     app,
-    window_size: [1200, 800],
-    headless: headless,
-    browser_options: { "no-sandbox" => nil },
+    window_size:     [1200, 800],
+    headless:        headless,
+    browser_options: { "no-sandbox" => nil }
   )
 end
 
@@ -40,8 +40,14 @@ class ApplicationSystemTestCase < Minitest::Test
         done(err ? [] : results.violations);
       });
     JS
-    assert violations.empty?,
-      "Expected no axe violations, but found #{violations.size}:\n" +
+
+    assert_empty violations, axe_violation_message(violations)
+  end
+
+  private
+
+  def axe_violation_message(violations)
+    "Expected no axe violations, but found #{violations.size}:\n" +
       violations.map { |v|
         nodes = v["nodes"].map { |n| "    #{n["html"]}" }.join("\n")
         "  [#{v["id"]}] #{v["description"]}\n#{nodes}"

@@ -7,11 +7,13 @@ class ButtonComponentSystemTest < ApplicationSystemTestCase
 
   def test_default_passes_wcag
     visit "#{BASE}/default"
+
     assert_accessible
   end
 
   def test_as_link_passes_wcag
     visit "#{BASE}/as_link"
+
     assert_accessible
   end
 end

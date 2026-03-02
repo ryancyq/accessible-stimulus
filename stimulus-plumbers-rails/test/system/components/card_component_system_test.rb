@@ -7,11 +7,13 @@ class CardComponentSystemTest < ApplicationSystemTestCase
 
   def test_default_passes_wcag
     visit "#{BASE}/default"
+
     assert_accessible
   end
 
   def test_with_sections_passes_wcag
     visit "#{BASE}/with_sections"
+
     assert_accessible
   end
 end

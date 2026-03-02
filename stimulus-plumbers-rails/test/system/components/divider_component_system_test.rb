@@ -7,6 +7,7 @@ class DividerComponentSystemTest < ApplicationSystemTestCase
 
   def test_default_passes_wcag
     visit "#{BASE}/default"
+
     assert_accessible
   end
 end

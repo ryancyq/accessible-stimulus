@@ -26,4 +26,6 @@ end
 group :test do
   gem "capybara", "~> 3.39" # last version to support Ruby 2.7
   gem "minitest", "~> 5.25"
+  gem "cuprite"
+  gem "axe-core-capybara"
 end

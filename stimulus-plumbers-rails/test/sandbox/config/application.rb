@@ -18,4 +18,8 @@ class TestApp < Rails::Application
   config.secret_key_base = "test_secret_key_base"
   config.hosts.clear
   config.root = File.expand_path("../..", __dir__)
+
+  # ViewComponent previews
+  config.view_component.preview_paths << Rails.root.join("test/previews")
+  config.view_component.show_previews = true
 end

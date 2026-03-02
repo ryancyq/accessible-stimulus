@@ -24,8 +24,9 @@ group :development do
 end
 
 group :test do
-  gem "capybara", "~> 3.39" # last version to support Ruby 2.7
   gem "minitest", "~> 5.25"
-  gem "cuprite"
-  gem "puma"
+
+  gem "capybara", "~> 3.39" # last version to support Ruby 2.7
+  gem "cuprite", "~> 0.17"
+  gem "puma", "~> 7.2"
 end

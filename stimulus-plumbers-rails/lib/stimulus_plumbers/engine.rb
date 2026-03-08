@@ -9,6 +9,10 @@ module StimulusPlumbers
 
     config.autoload_paths << File.expand_path("../stimulus-plumbers", __dir__)
 
+    initializer "stimulus_plumbers.assets" do |app|
+      app.config.assets.paths << root.join("app/assets/javascripts")
+    end
+
     initializer "stimulus_plumbers.view_component" do
       ActiveSupport.on_load(:view_component) do
         # Ensure ViewComponent can find our components

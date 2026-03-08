@@ -6,6 +6,8 @@ require "active_support/core_ext/string"
 require "view_component"
 
 require_relative "stimulus_plumbers/configuration"
+require_relative "stimulus_plumbers/form/field_component"
+require_relative "stimulus_plumbers/form/builder"
 require_relative "stimulus_plumbers/logger"
 
 module StimulusPlumbers

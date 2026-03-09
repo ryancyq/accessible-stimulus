@@ -6,8 +6,8 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdn.jsdelivr.net/npm/axe-core/axe.min.js"></script>
   </head>
-  <body class="font-sans text-gray-900 bg-white">
-    <main class="max-w-lg mx-auto my-8 px-6">
+  <body class="text-gray-900 bg-white">
+    <main class="container mx-auto py-4">
       <%= yield %>
     </main>
     <!-- importmap resolves the bare "@hotwired/stimulus" specifier used by the dist bundle -->
@@ -16,12 +16,19 @@
     </script>
     <script type="module">
       import { Application } from "@hotwired/stimulus";
-      import { PasswordRevealController, AutoResizeController }
-        from "/dist/stimulus-plumbers-controllers.es.js";
+      import * as StimulusPlumbers from "/dist/stimulus-plumbers-controllers.es.js";
 
       const app = Application.start();
-      app.register("password-reveal", PasswordRevealController);
-      app.register("auto-resize",     AutoResizeController);
+
+      Object.entries(StimulusPlumbers)
+        .filter(([name]) => name.endsWith("Controller"))
+        .forEach(([name, controller]) => {
+          const identifier = name
+            .replace("Controller", "")
+            .replace(/([a-z])([A-Z])/g, "$1-$2")
+            .toLowerCase();
+          app.register(identifier, controller);
+        });
     </script>
   </body>
 </html>

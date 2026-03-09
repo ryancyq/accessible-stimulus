@@ -1,9 +1,6 @@
 # frozen_string_literal: true
 
-class FormController < ActionController::Base
-  layout "form"
-  helper StimulusPlumbers::Helpers
-
+class FormController < ApplicationController
   def sign_up
     @form = SignUp.new
   end

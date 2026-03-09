@@ -3,6 +3,10 @@
 Rails.application.routes.draw do
   mount ViewComponent::Engine, at: "/"
 
+  scope "/components", controller: "components" do
+    get :profile
+  end
+
   scope "/form", controller: "form" do
     get :sign_up
     get :field_error

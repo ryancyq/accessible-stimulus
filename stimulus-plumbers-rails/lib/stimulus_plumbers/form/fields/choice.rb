@@ -10,7 +10,7 @@ module StimulusPlumbers
           custom_opts[:input_id] ||= "#{object_name}_#{attribute}"
           rails_opts[:id]        ||= custom_opts[:input_id]
           field = build_field(attribute, custom_opts)
-          apply_theme!(:form_checkbox, rails_opts, state: field.state)
+          apply_theme!(:form_checkbox, rails_opts, error: field.error?)
           render_field(field, super(attribute, rails_opts, checked_value, unchecked_value))
         end
 
@@ -20,7 +20,7 @@ module StimulusPlumbers
           custom_opts[:input_id] ||= "#{object_name}_#{attribute}_#{tag_value}"
           rails_opts[:id]        ||= custom_opts[:input_id]
           field = build_field(attribute, custom_opts)
-          apply_theme!(:form_radio, rails_opts, state: field.state)
+          apply_theme!(:form_radio, rails_opts, error: field.error?)
           render_field(field, super(attribute, tag_value, rails_opts))
         end
       end

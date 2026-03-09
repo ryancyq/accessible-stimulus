@@ -206,20 +206,20 @@ class BuilderTest < ActionView::TestCase
     assert_equal 100, opts[:data][:"char-count-max-value"]
   end
 
-  # ── build_field / state ───────────────────────────────────────────────────
+  # ── build_field / error? ──────────────────────────────────────────────────
 
-  def test_build_field_state_is_default_without_errors
+  def test_build_field_has_no_error_without_errors
     builder = StimulusPlumbers::Form::Builder.new("sign_in_form", @form, view, {})
     field   = builder.send(:build_field, :email, {})
 
-    assert_equal :default, field.state
+    assert_equal false, field.error?
   end
 
-  def test_build_field_state_is_error_when_model_has_errors
+  def test_build_field_has_error_when_model_has_errors
     @form.errors.add(:email, "is invalid")
     builder = StimulusPlumbers::Form::Builder.new("sign_in_form", @form, view, {})
     field   = builder.send(:build_field, :email, {})
 
-    assert_equal :error, field.state
+    assert_equal true, field.error?
   end
 end

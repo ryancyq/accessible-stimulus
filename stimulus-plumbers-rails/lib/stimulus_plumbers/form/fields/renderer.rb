@@ -36,7 +36,7 @@ module StimulusPlumbers
             template.content_tag(:p, message, id: field.error_id, class: error_klass, role: "alert")
           }.join.html_safe
 
-          field_klass = theme.resolve(:form_group, layout: field.layout, state: field.state).fetch(:classes, "")
+          field_klass = theme.resolve(:form_group, layout: field.layout, error: field.error?).fetch(:classes, "")
 
           template.content_tag(:div, class: field_klass) do
             label_html + input_html.html_safe + hint_html + errors_html

@@ -41,19 +41,19 @@ class FieldComponentTest < Minitest::Test
     assert_equal ["Custom error"], component(attribute: :email, error: "Custom error").errors
   end
 
-  # ── state ─────────────────────────────────────────────────────────────────
+  # ── error? ────────────────────────────────────────────────────────────────
 
-  def test_state_is_default_with_no_errors
-    assert_equal :default, component(attribute: :email).state
+  def test_no_error_with_no_errors
+    assert_equal false, component(attribute: :email).error?
   end
 
-  def test_state_is_error_when_model_has_errors
+  def test_error_when_model_has_errors
     @form.errors.add(:email, "is invalid")
-    assert_equal :error, component(attribute: :email).state
+    assert_equal true, component(attribute: :email).error?
   end
 
-  def test_state_is_error_when_error_override_is_set
-    assert_equal :error, component(attribute: :email, error: "Something went wrong").state
+  def test_error_when_error_override_is_set
+    assert_equal true, component(attribute: :email, error: "Something went wrong").error?
   end
 
   # ── ID helpers ─────────────────────────────────────────────────────────────

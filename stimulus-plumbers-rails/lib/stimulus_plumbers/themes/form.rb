@@ -6,21 +6,24 @@ module StimulusPlumbers
       SCHEMA = {
         form_group:         {
           layout: { default: :stacked, range: Schema::Ranges::LAYOUT_RANGE },
-          state:  { default: :default, range: Schema::Ranges::STATE_RANGE }
+          error:  { default: false,    range: Schema::Ranges::BOOL_RANGE }
         }.freeze,
         form_label:         { required: { default: false, range: Schema::Ranges::BOOL_RANGE } }.freeze,
         form_required_mark: {}.freeze,
         form_details:       {}.freeze,
         form_error:         {}.freeze,
-        form_input:         { state: { default: :default, range: Schema::Ranges::STATE_RANGE } }.freeze,
-        form_textarea:      { state: { default: :default, range: Schema::Ranges::STATE_RANGE } }.freeze,
-        form_file:          { state: { default: :default, range: Schema::Ranges::STATE_RANGE } }.freeze,
-        form_select:        { state: { default: :default, range: Schema::Ranges::STATE_RANGE } }.freeze,
-        form_checkbox:      { state: { default: :default, range: Schema::Ranges::STATE_RANGE } }.freeze,
-        form_radio:         { state: { default: :default, range: Schema::Ranges::STATE_RANGE } }.freeze,
-        form_actor:         { state: { default: :default, range: Schema::Ranges::STATE_RANGE } }.freeze,
+        form_input:         { error: { default: false, range: Schema::Ranges::BOOL_RANGE } }.freeze,
+        form_textarea:      { error: { default: false, range: Schema::Ranges::BOOL_RANGE } }.freeze,
+        form_file:          { error: { default: false, range: Schema::Ranges::BOOL_RANGE } }.freeze,
+        form_select:        { error: { default: false, range: Schema::Ranges::BOOL_RANGE } }.freeze,
+        form_checkbox:      { error: { default: false, range: Schema::Ranges::BOOL_RANGE } }.freeze,
+        form_radio:         { error: { default: false, range: Schema::Ranges::BOOL_RANGE } }.freeze,
+        form_actor:         { error: { default: false, range: Schema::Ranges::BOOL_RANGE } }.freeze,
         form_input_reveal:  {}.freeze,
-        form_reveal_button: {}.freeze
+        form_button_reveal: {}.freeze,
+        form_submit:        {
+          variant: { default: :default, range: %i[default button].freeze }
+        }.freeze
       }.freeze
     end
   end

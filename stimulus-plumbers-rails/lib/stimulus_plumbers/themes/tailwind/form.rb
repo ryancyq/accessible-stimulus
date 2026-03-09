@@ -7,7 +7,7 @@ module StimulusPlumbers::Themes::Tailwind::Form
 
   private
 
-  def form_group_classes(layout: :stacked, state: :default)
+  def form_group_classes(layout: :stacked, error: false)
     {
       classes: klasses(
         "flex", "gap-1", "mb-3",
@@ -32,40 +32,40 @@ module StimulusPlumbers::Themes::Tailwind::Form
     { classes: klasses("text-xs", "text-red-700") }
   end
 
-  def form_input_classes(state: :default)
+  def form_input_classes(error: false)
     {
       classes: klasses(
         *INPUT_BASE,
-        *(state == :error ? INPUT_ERROR : INPUT_DEFAULT)
+        *(error ? INPUT_ERROR : INPUT_DEFAULT)
       )
     }
   end
 
-  def form_textarea_classes(state: :default)
-    form_input_classes(state: state)
+  def form_textarea_classes(error: false)
+    form_input_classes(error: error)
   end
 
-  def form_file_classes(state: :default)
-    form_input_classes(state: state)
+  def form_file_classes(error: false)
+    form_input_classes(error: error)
   end
 
-  def form_select_classes(state: :default)
-    form_input_classes(state: state)
+  def form_select_classes(error: false)
+    form_input_classes(error: error)
   end
 
-  def form_checkbox_classes(state: :default)
+  def form_checkbox_classes(error: false)
     { classes: klasses("size-4", "rounded", "border-gray-500", "text-blue-700") }
   end
 
-  def form_radio_classes(state: :default)
+  def form_radio_classes(error: false)
     { classes: klasses("size-4", "border-gray-500", "text-blue-700") }
   end
 
-  def form_actor_classes(state: :default)
+  def form_actor_classes(error: false)
     {
       classes: klasses(
         "flex", "items-center", "overflow-hidden", "rounded-md", "border",
-        state == :error ? "border-red-700" : "border-gray-500"
+        error ? "border-red-700" : "border-gray-500"
       )
     }
   end
@@ -74,7 +74,16 @@ module StimulusPlumbers::Themes::Tailwind::Form
     { classes: klasses("flex-1", "border-0", "bg-transparent", "px-3", "py-2", "text-sm", "text-gray-900", "focus:outline-none") }
   end
 
-  def form_reveal_button_classes
+  def form_button_reveal_classes
     { classes: klasses("self-stretch", "border-0", "bg-transparent", "px-3", "cursor-pointer", "text-gray-600", "hover:text-gray-900", "text-sm") }
+  end
+
+  def form_submit_classes(variant: :default)
+    case variant
+    when :button
+      { classes: klasses(*Button::BASE, *Button::VARIANTS[:primary], *Button::SIZES[:md]) }
+    else
+      { classes: klasses("cursor-pointer", "text-sm", "font-medium", "text-gray-900", "hover:underline") }
+    end
   end
 end

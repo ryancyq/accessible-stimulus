@@ -27,7 +27,7 @@ module StimulusPlumbers
           custom_opts, rails_opts = extract_options(options)
           field = build_field(attribute, custom_opts)
           apply_aria_describedby!(field, rails_opts)
-          apply_theme!(:form_input, rails_opts, state: field.state)
+          apply_theme!(:form_input, rails_opts, error: field.error?)
           render_field(field, super(attribute, rails_opts))
         end
       end
@@ -36,7 +36,7 @@ module StimulusPlumbers
         custom_opts, rails_opts = extract_options(options)
         field = build_field(attribute, custom_opts)
         apply_aria_describedby!(field, rails_opts)
-        apply_theme!(:form_textarea, rails_opts, state: field.state)
+        apply_theme!(:form_textarea, rails_opts, error: field.error?)
         apply_stimulus!(rails_opts, controller: "auto-resize")
         render_field(field, super(attribute, rails_opts))
       end
@@ -45,7 +45,7 @@ module StimulusPlumbers
         custom_opts, rails_opts = extract_options(options)
         field = build_field(attribute, custom_opts)
         apply_aria_describedby!(field, rails_opts)
-        apply_theme!(:form_file, rails_opts, state: field.state)
+        apply_theme!(:form_file, rails_opts, error: field.error?)
         render_field(field, super(attribute, rails_opts))
       end
 
@@ -88,7 +88,7 @@ module StimulusPlumbers
         options[:id] ||= field.input_id
         ids = []
         ids << field.hint_id  if field.details.present?
-        ids << field.error_id if field.state == :error
+        ids << field.error_id if field.error?
         options[:"aria-describedby"] = ids.join(" ") if ids.any?
       end
 

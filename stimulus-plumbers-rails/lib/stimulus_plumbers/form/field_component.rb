@@ -37,8 +37,8 @@ module StimulusPlumbers
         end
       end
 
-      def state
-        errors.any? ? :error : :default
+      def error?
+        errors.any?
       end
 
       def input_id

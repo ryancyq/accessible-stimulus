@@ -39,7 +39,6 @@ HELPERS = %w[
 BASES = %w[
   stimulus_plumbers/components/container_component
   stimulus_plumbers/components/divider_component
-  stimulus_plumbers/components/button_component
 ].freeze
 
 PRELOAD = (HELPERS + BASES).freeze

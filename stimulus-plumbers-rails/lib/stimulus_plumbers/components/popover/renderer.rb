@@ -21,17 +21,12 @@ module StimulusPlumbers
         end
       end
 
-      class Renderer
-        attr_reader :template, :theme
-
-        def initialize(template, theme)
-          @template = template
-          @theme    = theme
-        end
-
-        def popover(interactive: true, **html_options, &block)
-          classes = theme.resolve(:popover).fetch(:classes, "")
-          html_options[:class] = merge_class(classes, html_options[:class])
+      class Renderer < Plumber::Base
+        def popover(interactive: true, **kwargs, &block)
+          self.html_options = {
+            classes: theme.resolve(:popover).fetch(:classes, ""),
+            **kwargs
+          }
 
           builder = Builder.new(template)
           template.capture(builder, &block)
@@ -44,12 +39,6 @@ module StimulusPlumbers
                               end
             template.safe_join([builder.activator_html, wrapped_content])
           end
-        end
-
-        private
-
-        def merge_class(*classes)
-          classes.select(&:present?).join(" ").presence
         end
       end
     end

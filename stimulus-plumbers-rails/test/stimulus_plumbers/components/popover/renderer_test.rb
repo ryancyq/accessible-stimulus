@@ -4,7 +4,7 @@ require "test_helper"
 
 class PopoverRendererTest < ActionView::TestCase
   def renderer
-    StimulusPlumbers::Components::Popover::Renderer.new(self, StimulusPlumbers.config.theme)
+    StimulusPlumbers::Components::Popover::Renderer.new(self)
   end
 
   # attr_readers

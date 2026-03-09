@@ -3,66 +3,47 @@
 module StimulusPlumbers
   module Components
     module Plumber
-      class Base < ViewComponent::Base
-        include StimulusPlumbers::Components::Plumber::Attributes
-        include StimulusPlumbers::Components::Plumber::Views
+      class Base
+        include Attributes
 
-        class << self
-          attr_writer :tag_prefix, :component_name
+        attr_reader :template
 
-          def tag_prefix
-            @tag_prefix ||= component_name.dasherize
-          end
-
-          def component_name
-            @component_name ||= name
-                                .sub(%r{\AStimulusPlumbers::Components::}, "") # strip component namespace
-                                .sub(%r{Component\z}, "")                      # strip class suffix
-                                .split("::")
-                                .join("_")
-                                .underscore
-                                .to_sym
-          end
-        end
-
-        def initialize(**kwargs)
-          super()
-          component_attrs(**theme.resolve(self.class.component_name, **kwargs), **kwargs) do |args, _attrs|
-            process_theme_args(args)
-            process_stimulus_args(args)
-          end
+        def initialize(template)
+          @template = template
         end
 
         def theme
           StimulusPlumbers.config.theme
         end
 
-        def stimulus
-          @stimulus ||= Class.new { include StimulusPlumbers::Components::Plumber::StimulusRegistry }.new
-        end
+        def self.method_added(method_name)
+          super
+          return if self == Base
+          return unless public_method_defined?(method_name)
+          return if instance_variable_get(:@_intercepting)
 
-        def dom_id(*args)
-          target = args.first
-          if (target.is_a?(Class) && target < ActiveRecord::Base) || (target in ActiveRecord::Base)
-            return helpers.dom_id(*args) # rails helper
+          instance_variable_set(:@_intercepting, true)
+          original = instance_method(method_name)
+          define_method(method_name) do |*args, **kwargs, &block|
+            if renderer_klass.respond_to?(method_name)
+              renderer_klass.public_send(method_name, *args, **kwargs, &block)
+            else
+              original.bind_call(self, *args, **kwargs, &block)
+            end
           end
-
-          [self.class.tag_prefix, *args.map(&:to_s), SecureRandom.uuid].join("-")
+          instance_variable_set(:@_intercepting, false)
         end
 
         private
 
-        def process_theme_args(args)
-          theme.attribute_names(self.class.component_name).each { args.delete(_1) }
+        def icon(name, **html_options)
+          Icon::Renderer.new(template).icon(name, **html_options)
         end
 
-        def process_stimulus_args(args)
-          stimulus.extract(args[:data]) if args[:data].is_a?(Hash)
-          stimulus.extract(args.delete(:stimulus)) if args[:stimulus].is_a?(Hash)
-        end
+        def renderer_klass
+          return @renderer_klass if defined?(@renderer_klass)
 
-        def before_render
-          (component_attrs[:data] ||= {}).merge!(stimulus.data) if stimulus.data.present?
+          @renderer_klass = "#{self.class.module_parent.name}::#{theme.name}Renderer".safe_constantize
         end
       end
     end

@@ -4,7 +4,7 @@ require "test_helper"
 
 class ButtonRendererTest < ActionView::TestCase
   def renderer
-    StimulusPlumbers::Components::Button::Renderer.new(self, StimulusPlumbers.config.theme)
+    StimulusPlumbers::Components::Button::Renderer.new(self)
   end
 
   # attr_readers

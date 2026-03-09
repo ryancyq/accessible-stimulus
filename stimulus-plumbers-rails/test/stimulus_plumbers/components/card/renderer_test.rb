@@ -4,7 +4,7 @@ require "test_helper"
 
 class CardRendererTest < ActionView::TestCase
   def renderer
-    StimulusPlumbers::Components::Card::Renderer.new(self, StimulusPlumbers.config.theme)
+    StimulusPlumbers::Components::Card::Renderer.new(self)
   end
 
   # attr_readers

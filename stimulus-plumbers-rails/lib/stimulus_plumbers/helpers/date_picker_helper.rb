@@ -10,7 +10,7 @@ module StimulusPlumbers
       private
 
       def date_picker_renderer
-        Components::DatePicker::Renderer.new(self, StimulusPlumbers.config.theme)
+        Components::DatePicker::Renderer.new(self)
       end
     end
   end

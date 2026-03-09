@@ -4,7 +4,7 @@ require "test_helper"
 
 class ActionListRendererTest < ActionView::TestCase
   def renderer
-    StimulusPlumbers::Components::ActionList::Renderer.new(self, StimulusPlumbers.config.theme)
+    StimulusPlumbers::Components::ActionList::Renderer.new(self)
   end
 
   # attr_readers

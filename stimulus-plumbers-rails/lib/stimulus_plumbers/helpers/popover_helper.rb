@@ -10,7 +10,7 @@ module StimulusPlumbers
       private
 
       def popover_renderer
-        Components::Popover::Renderer.new(self, StimulusPlumbers.config.theme)
+        Components::Popover::Renderer.new(self)
       end
     end
   end

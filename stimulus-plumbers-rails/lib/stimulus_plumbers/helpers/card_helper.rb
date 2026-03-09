@@ -14,7 +14,7 @@ module StimulusPlumbers
       private
 
       def card_renderer
-        Components::Card::Renderer.new(self, StimulusPlumbers.config.theme)
+        Components::Card::Renderer.new(self)
       end
     end
   end

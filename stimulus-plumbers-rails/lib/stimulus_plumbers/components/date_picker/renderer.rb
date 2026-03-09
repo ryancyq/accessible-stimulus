@@ -3,18 +3,9 @@
 module StimulusPlumbers
   module Components
     module DatePicker
-      class Renderer
-        STIMULUS_CONTROLLER = "calendar-month"
-
-        attr_reader :template, :theme
-
-        def initialize(template, theme)
-          @template = template
-          @theme    = theme
-        end
-
+      class Renderer < Plumber::Base
         def month(**html_options)
-          data = { controller: STIMULUS_CONTROLLER }.merge(html_options.delete(:data) || {})
+          data = { controller: "calendar-month" }.merge(html_options.delete(:data) || {})
 
           template.content_tag(:div, data: data, **html_options) do
             template.safe_join(
@@ -30,7 +21,7 @@ module StimulusPlumbers
         private
 
         def target(name)
-          { "#{STIMULUS_CONTROLLER}-target": name }
+          { "calendar-month-target": name }
         end
 
         def header

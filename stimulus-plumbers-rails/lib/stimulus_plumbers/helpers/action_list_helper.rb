@@ -18,7 +18,7 @@ module StimulusPlumbers
       private
 
       def action_list_renderer
-        Components::ActionList::Renderer.new(self, StimulusPlumbers.config.theme)
+        Components::ActionList::Renderer.new(self)
       end
     end
   end

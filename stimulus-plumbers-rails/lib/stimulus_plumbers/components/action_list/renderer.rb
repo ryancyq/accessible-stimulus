@@ -3,21 +3,17 @@
 module StimulusPlumbers
   module Components
     module ActionList
-      class Renderer
-        attr_reader :template, :theme
-
-        def initialize(template, theme)
-          @template = template
-          @theme    = theme
-        end
-
-        def list(**html_options, &block)
-          classes = theme.resolve(:action_list).fetch(:classes, "")
-          html_options[:class] = merge_class(classes, html_options[:class])
+      class Renderer < Plumber::Base
+        def list(**kwargs, &block)
+          self.html_options = {
+            classes: theme.resolve(:action_list).fetch(:classes, ""),
+            **kwargs
+          }
           template.content_tag(:div, template.capture(&block), **html_options)
         end
 
-        def section(title: nil, **html_options, &block)
+        def section(title: nil, **kwargs, &block)
+          self.html_options = { **kwargs }
           template.content_tag(:div, **html_options) do
             template.safe_join(
               [
@@ -28,10 +24,12 @@ module StimulusPlumbers
           end
         end
 
-        def item(content = nil, url: nil, external: false, active: false, **html_options, &block)
+        def item(content = nil, url: nil, external: false, active: false, **kwargs, &block)
           content = template.capture(&block) if block_given?
-          classes = theme.resolve(:action_list_item, active: active).fetch(:classes, "")
-          html_options[:class] = merge_class(classes, html_options[:class])
+          self.html_options = {
+            classes: theme.resolve(:action_list_item, active: active).fetch(:classes, ""),
+            **kwargs
+          }
 
           inner = if url
                     html_options[:target] = "_blank" if external
@@ -42,12 +40,6 @@ module StimulusPlumbers
                   end
 
           template.content_tag(:li, inner)
-        end
-
-        private
-
-        def merge_class(*classes)
-          classes.select(&:present?).join(" ").presence
         end
       end
     end

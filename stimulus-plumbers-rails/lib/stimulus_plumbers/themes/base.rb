@@ -22,6 +22,10 @@ module StimulusPlumbers
         **Layout::SCHEMA
       }.freeze
 
+      def name
+        @name ||= self.class.name.demodulize.delete_suffix("Theme")
+      end
+
       def attribute_names(component)
         SCHEMA.fetch(component, {}).keys
       end

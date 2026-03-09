@@ -4,7 +4,7 @@ require "test_helper"
 
 class DatePickerRendererTest < ActionView::TestCase
   def renderer
-    StimulusPlumbers::Components::DatePicker::Renderer.new(self, StimulusPlumbers.config.theme)
+    StimulusPlumbers::Components::DatePicker::Renderer.new(self)
   end
 
   # attr_readers

@@ -3,21 +3,16 @@
 module StimulusPlumbers
   module Components
     module Avatar
-      class Renderer
-        attr_reader :template, :theme
+      class Renderer < Plumber::Base
+        def avatar(name: nil, initials: nil, url: nil, color: nil, size: :md, **kwargs, &block)
+          color_css = resolve_color(color, name, initials) unless url || block_given?
 
-        def initialize(template, theme)
-          @template = template
-          @theme    = theme
-        end
-
-        def avatar(name: nil, initials: nil, url: nil, color: nil, size: :md, **html_options, &block)
-          base_classes = theme.resolve(:avatar, size: size).fetch(:classes, "")
-          color_css    = resolve_color(color, name, initials) unless url || block_given?
-
-          html_options[:class]        = merge_class(base_classes, color_css, html_options[:class])
-          html_options[:role]       ||= "img"
-          html_options[:"aria-label"] = name if name.present?
+          self.html_options = {
+            classes:      [theme.resolve(:avatar, size: size).fetch(:classes, ""), color_css],
+            "aria-label": name,
+            role:         "img",
+            **kwargs
+          }
 
           template.content_tag(:span, inner(name, initials, url, &block), **html_options)
         end
@@ -70,10 +65,6 @@ module StimulusPlumbers
                     "M13.99 12.78a6.02 6.02 0 1112.03 0 6.02 6.02 0 01-12.03 0z"
             )
           end
-        end
-
-        def merge_class(*classes)
-          classes.select(&:present?).join(" ").presence
         end
       end
     end

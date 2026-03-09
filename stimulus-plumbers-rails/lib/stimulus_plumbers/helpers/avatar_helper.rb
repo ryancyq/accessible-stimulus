@@ -10,7 +10,7 @@ module StimulusPlumbers
       private
 
       def avatar_renderer
-        Components::Avatar::Renderer.new(self, StimulusPlumbers.config.theme)
+        Components::Avatar::Renderer.new(self)
       end
     end
   end

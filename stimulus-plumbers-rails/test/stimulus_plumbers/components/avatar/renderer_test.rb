@@ -4,7 +4,7 @@ require "test_helper"
 
 class AvatarRendererTest < ActionView::TestCase
   def renderer
-    StimulusPlumbers::Components::Avatar::Renderer.new(self, StimulusPlumbers.config.theme)
+    StimulusPlumbers::Components::Avatar::Renderer.new(self)
   end
 
   # attr_readers

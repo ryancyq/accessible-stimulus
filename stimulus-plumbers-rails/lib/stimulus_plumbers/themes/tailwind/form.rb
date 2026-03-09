@@ -8,42 +8,51 @@ module StimulusPlumbers::Themes::Tailwind::Form
   INPUT_ERROR   = %w[border-red-700 focus:ring-red-700].freeze
   INPUT_DEFAULT = %w[border-gray-500 focus:ring-blue-700].freeze
 
+  GROUP_BASE    = %w[flex gap-1 mb-3].freeze
+  GROUP_INLINE  = %w[flex-row items-center].freeze
+
+  LABEL         = %w[text-sm font-medium text-gray-900].freeze
+  REQUIRED_MARK = %w[text-red-700 ml-0.5].freeze
+  DETAILS       = %w[text-xs text-gray-600].freeze
+  ERROR_TEXT    = %w[text-xs text-red-700].freeze
+  CHECKBOX      = %w[size-4 rounded border-gray-500 text-blue-700].freeze
+  RADIO         = %w[size-4 border-gray-500 text-blue-700].freeze
+
+  ACTOR_BASE    = %w[flex items-center overflow-hidden rounded-md border].freeze
+  ACTOR_BORDER  = { error: "border-red-700", default: "border-gray-500" }.freeze
+
+  INPUT_REVEAL = %w[
+    flex-1 border-0 bg-transparent px-3 py-2 text-sm text-gray-900 focus:outline-none
+  ].freeze
+  BUTTON_REVEAL = %w[
+    self-stretch border-0 bg-transparent px-3 cursor-pointer text-gray-600 hover:text-gray-900 text-sm
+  ].freeze
+  SUBMIT_LINK = %w[cursor-pointer text-sm font-medium text-gray-900 hover:underline].freeze
+
   private
 
   def form_group_classes(layout: :stacked, **_rest)
-    {
-      classes: klasses(
-        "flex",
-        "gap-1",
-        "mb-3",
-        layout == :inline ? %w[flex-row items-center] : "flex-col"
-      )
-    }
+    { classes: klasses(*GROUP_BASE, layout == :inline ? GROUP_INLINE : "flex-col") }
   end
 
-  def form_label_classes(*)
-    { classes: klasses("text-sm", "font-medium", "text-gray-900") }
+  def form_label_classes(**)
+    { classes: klasses(*LABEL) }
   end
 
   def form_required_mark_classes
-    { classes: klasses("text-red-700", "ml-0.5") }
+    { classes: klasses(*REQUIRED_MARK) }
   end
 
   def form_details_classes
-    { classes: klasses("text-xs", "text-gray-600") }
+    { classes: klasses(*DETAILS) }
   end
 
   def form_error_classes
-    { classes: klasses("text-xs", "text-red-700") }
+    { classes: klasses(*ERROR_TEXT) }
   end
 
   def form_input_classes(error: false)
-    {
-      classes: klasses(
-        *INPUT_BASE,
-        *(error ? INPUT_ERROR : INPUT_DEFAULT)
-      )
-    }
+    { classes: klasses(*INPUT_BASE, *(error ? INPUT_ERROR : INPUT_DEFAULT)) }
   end
 
   def form_textarea_classes(error: false)
@@ -58,55 +67,24 @@ module StimulusPlumbers::Themes::Tailwind::Form
     form_input_classes(error: error)
   end
 
-  def form_checkbox_classes(*)
-    { classes: klasses("size-4", "rounded", "border-gray-500", "text-blue-700") }
+  def form_checkbox_classes(**)
+    { classes: klasses(*CHECKBOX) }
   end
 
-  def form_radio_classes(*)
-    { classes: klasses("size-4", "border-gray-500", "text-blue-700") }
+  def form_radio_classes(**)
+    { classes: klasses(*RADIO) }
   end
 
   def form_actor_classes(error: false)
-    {
-      classes: klasses(
-        "flex",
-        "items-center",
-        "overflow-hidden",
-        "rounded-md",
-        "border",
-        error ? "border-red-700" : "border-gray-500"
-      )
-    }
+    { classes: klasses(*ACTOR_BASE, ACTOR_BORDER[error ? :error : :default]) }
   end
 
   def form_input_reveal_classes
-    {
-      classes: klasses(
-        "flex-1",
-        "border-0",
-        "bg-transparent",
-        "px-3",
-        "py-2",
-        "text-sm",
-        "text-gray-900",
-        "focus:outline-none"
-      )
-    }
+    { classes: klasses(*INPUT_REVEAL) }
   end
 
   def form_button_reveal_classes
-    {
-      classes: klasses(
-        "self-stretch",
-        "border-0",
-        "bg-transparent",
-        "px-3",
-        "cursor-pointer",
-        "text-gray-600",
-        "hover:text-gray-900",
-        "text-sm"
-      )
-    }
+    { classes: klasses(*BUTTON_REVEAL) }
   end
 
   def form_submit_classes(variant: :default)
@@ -114,7 +92,7 @@ module StimulusPlumbers::Themes::Tailwind::Form
     when :button
       { classes: klasses(*Button::BASE, *Button::VARIANTS[:primary], *Button::SIZES[:md]) }
     else
-      { classes: klasses("cursor-pointer", "text-sm", "font-medium", "text-gray-900", "hover:underline") }
+      { classes: klasses(*SUBMIT_LINK) }
     end
   end
 end

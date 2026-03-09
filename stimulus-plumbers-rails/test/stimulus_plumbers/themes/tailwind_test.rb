@@ -4,7 +4,7 @@ require "test_helper"
 
 class TailwindThemeTest < Minitest::Test
   def setup
-    @theme = StimulusPlumbers::Themes::Tailwind.new
+    @theme = StimulusPlumbers::Themes::TailwindTheme.new
   end
 
   def classes_for(component, **args)

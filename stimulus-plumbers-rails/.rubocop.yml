@@ -48,7 +48,8 @@ Layout/HashAlignment:
 Metrics/ClassLength:
   Exclude:
     - lib/stimulus_plumbers/themes/**/*.rb
-    - test/**/*_test.rb
+    - test/stimulus_plumbers/themes/**/*_test.rb
+    - test/stimulus_plumbers/form/builder_test.rb
 
 Metrics/ModuleLength:
   Exclude:
@@ -57,23 +58,24 @@ Metrics/ModuleLength:
 Metrics/MethodLength:
   Exclude:
     - lib/stimulus_plumbers/themes/**/*.rb
-    - lib/stimulus_plumbers/components/*/renderer.rb
+    - lib/stimulus_plumbers/components/**/*.rb
     - lib/stimulus_plumbers/form/fields/*.rb
-    - test/**/*_test.rb
+    - test/system/**/*_test.rb
 
 Metrics/AbcSize:
   Exclude:
     - lib/stimulus_plumbers/form/builder.rb
-    - lib/stimulus_plumbers/components/*/renderer.rb
+    - lib/stimulus_plumbers/components/**/*.rb
     - lib/stimulus_plumbers/form/fields/*.rb
     - lib/stimulus_plumbers/themes/base.rb
+    - test/system/**/*_test.rb
 
 Layout/LineLength:
   Max: 125
 
 Metrics/ParameterLists:
   Exclude:
-    - lib/stimulus_plumbers/components/*/renderer.rb
+    - lib/stimulus_plumbers/components/**/*.rb
     - lib/stimulus_plumbers/form/field_component.rb
     - lib/stimulus_plumbers/form/fields/*.rb
     - lib/stimulus_plumbers/helpers/*.rb

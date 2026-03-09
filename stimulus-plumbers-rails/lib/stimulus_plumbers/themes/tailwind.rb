@@ -3,6 +3,7 @@
 module StimulusPlumbers
   module Themes
     class Tailwind < Base
+      require_relative "tailwind/action_list"
       require_relative "tailwind/avatar"
       require_relative "tailwind/button"
       require_relative "tailwind/calendar"
@@ -10,6 +11,7 @@ module StimulusPlumbers
       require_relative "tailwind/form"
       require_relative "tailwind/layout"
 
+      include ActionList
       include Avatar
       include Button
       include Calendar

@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
 require_relative "schema/ranges"
+require_relative "action_list"
 require_relative "avatar"
 require_relative "button"
 require_relative "calendar"
@@ -12,6 +13,7 @@ module StimulusPlumbers
   module Themes
     class Base
       SCHEMA = {
+        **ActionList::SCHEMA,
         **Avatar::SCHEMA,
         **Button::SCHEMA,
         **Calendar::SCHEMA,

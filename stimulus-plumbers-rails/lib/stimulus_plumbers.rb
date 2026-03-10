@@ -10,6 +10,8 @@ require_relative "stimulus_plumbers/helpers"
 require_relative "stimulus_plumbers/logger"
 
 require_relative "stimulus_plumbers/components/plumber/attributes"
+require_relative "stimulus_plumbers/components/plumber/dispatcher"
+require_relative "stimulus_plumbers/components/plumber/renderer"
 require_relative "stimulus_plumbers/components/plumber/base"
 
 require_relative "stimulus_plumbers/components/action_list/renderer"
